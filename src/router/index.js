@@ -4,6 +4,7 @@ import Post from "../views/Post.vue";
 import Login from "../views/Login.vue";
 import UserInfo from "../views/UserInfo.vue";
 import PostDetail from "../views/PostDetail.vue";
+import PostWrite from "../views/PostWrite.vue";
 Vue.use(VueRouter);
 
 const routes = [
@@ -28,15 +29,20 @@ const routes = [
     },
   },
   {
-    path : "/article/:post",
-    name : "post",
-    component : PostDetail,
+    path: "/article/:post",
+    name: "post",
+    component: PostDetail,
   },
   {
     path: "/me",
     name: "userInfo",
     component: UserInfo,
   },
+  {
+    path:"/write",
+    name: "PostWrite",
+    component : PostWrite
+  }
 ];
 
 const router = new VueRouter({

@@ -35,11 +35,15 @@
         </tr>
       </tbody>
     </table>
+    <div class="controls">
+      <button class="btn btn-primary" @click="postWrite">글쓰기</button>
+    </div>
   </div>
 </template>
 
 <script>
-import axios from "axios";
+//import axios from "axios";
+import api from "../service/api";
 
 function timeDiff(millis, curMillis) {
   var diffMillis = curMillis - millis; // 밀리세컨드
@@ -73,6 +77,7 @@ export default {
     };
   },
   mounted() {
+    /*
     axios
       .get("http://localhost:8888/blog/api/posts", { withCredentials: true })
       .then((res) => {
@@ -81,7 +86,14 @@ export default {
         this.lists = res.data.posts;
         this.limit = res.data.limit;
       });
+      */
+    api.post.all().then((res) => {
+      this.cates = res.data.cata;
+      this.lists = res.data.posts;
+      this.limit = res.data.limit;
+    });
   },
+
   methods: {
     diff(post) {
       return timeDiff(post.creationDate, new Date().getTime());
@@ -96,6 +108,9 @@ export default {
         path: "/article/" + postSeq,
       });
       // http://localhost:8080/article/46432
+    },
+    postWrite() {
+      this.$router.push("/write");
     },
   },
 };
