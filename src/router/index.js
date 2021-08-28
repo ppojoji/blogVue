@@ -39,10 +39,10 @@ const routes = [
     component: UserInfo,
   },
   {
-    path:"/write",
+    path: "/write",
     name: "PostWrite",
-    component : PostWrite
-  }
+    component: PostWrite,
+  },
 ];
 
 const router = new VueRouter({

@@ -1,9 +1,10 @@
 import Vue from "vue";
 import Vuex from "vuex";
+import api from "../service/api";
 
 Vue.use(Vuex);
 
-export default new Vuex.Store({
+const store = new Vuex.Store({
   state: {
     loginUser: null,
   },
@@ -15,3 +16,11 @@ export default new Vuex.Store({
   actions: {},
   modules: {},
 });
+
+api.user.myInfo().then((res) => {
+  console.log("[로그인 확인] ", res);
+  if (res.data.success) {
+    store.state.loginUser = res.data.user;
+  }
+});
+export default store;

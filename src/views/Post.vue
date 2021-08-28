@@ -27,6 +27,11 @@
               v-if="isRecentPost(post)"
             />
             {{ post.title }}
+            <img
+              class="file"
+              src="../assets/file.png"
+              v-if="post.upfileCount > 0"
+            />
           </td>
           <td>{{ post.category }}</td>
           <td>{{ post.viewCount }}</td>
@@ -119,6 +124,10 @@ export default {
 <style>
 .iconNew {
   width: 18px;
+  height: auto;
+}
+.file {
+  width: 22px;
   height: auto;
 }
 </style>

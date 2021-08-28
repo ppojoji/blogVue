@@ -12,6 +12,12 @@ const user = {
   login: (id, pwd) => {
     console.log("여기로 로그인 api 호출 코드 가져옴", id, pwd);
   },
+  myInfo: () => {
+    return axios.get("/api/myinfo");
+  },
+  logout: () => {
+    return axios.get("/logout");
+  },
 };
 /**
  * 게시물 관련 api
@@ -26,13 +32,36 @@ const post = {
   },
   remove: (postSeq) => {
     const params = new URLSearchParams();
-      params.append("pid", postSeq);
+    params.append("pid", postSeq);
     console.log("글 삭제", postSeq);
-    return axios.post("/article/api/delete",params )
+    return axios.post("/article/api/delete", params);
   },
-  update: (postSeq) => {
+  write: (title, contents, upfiles) => {
+    const form = new FormData();
+    form.append("title", title);
+    form.append("contents", contents);
+
+    upfiles.forEach((file) => {
+      form.append("files", file);
+    });
+    return axios.post("/article/api/write", form, {
+      headers: {
+        "Content-Type": "multipart/formdata",
+      },
+    });
+  },
+  update: (postSeq, title, contents) => {
     console.log("수정!");
-    return axios.get("/article/replies/" + postSeq);
+
+    const form = new FormData();
+    form.append("title", title);
+    form.append("contents", contents);
+
+    return axios.post("/article/api/update/" + postSeq, form, {
+      headers: {
+        "Content-Type": "multipart/formdata",
+      },
+    });
   },
 };
 

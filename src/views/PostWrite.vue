@@ -1,12 +1,14 @@
 <template>
   <div>
     <h3>글쓰기 화면입니다.</h3>
-    <EditForm :mode="false" :post="post" />
+    <EditForm :mode="false" :post="post" @update="update" />
   </div>
 </template>
 
 <script>
 import EditForm from "../components/EditForm.vue";
+import api from "../service/api";
+
 export default {
   components: { EditForm },
   data() {
@@ -17,6 +19,19 @@ export default {
         contents: "",
       },
     };
+  },
+  methods: {
+    write() {},
+    update(post) {
+      console.log("[TITLE] ", post);
+      api.post.write(post.title, post.contents, post.upfiles).then((res) => {
+        if (res.data.success) {
+          console.log(res);
+          alert("글이 작성되었습니다.");
+          this.$router.replace("/");
+        }
+      });
+    },
   },
 };
 </script>

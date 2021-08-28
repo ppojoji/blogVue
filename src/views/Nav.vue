@@ -3,8 +3,15 @@
     <h3>개인 블로그</h3>
     <div class="menu">
       <router-link class="menu-item" to="/">HOME</router-link>
-      <router-link class="menu-item" to="/logout" v-if="$store.state.loginUser"
+      <!-- <router-link class="menu-item" to="/logout" v-if="$store.state.loginUser"
         >LOGOUT</router-link
+      > -->
+      <a
+        href="#"
+        class="menu-item"
+        v-if="$store.state.loginUser"
+        @click="logout"
+        >LOGOUT</a
       >
       <router-link class="menu-item" to="/login" v-else>LOGIN</router-link>
       <router-link class="menu-item" to="/me" v-if="user">{{
@@ -15,6 +22,7 @@
 </template>
 
 <script>
+import api from "../service/api";
 export default {
   // data() {
   //   return {
@@ -25,6 +33,13 @@ export default {
     // store 객체의 축약 필드를 맵핑해줌
     user() {
       return this.$store.state.loginUser;
+    },
+  },
+  methods: {
+    logout() {
+      console.log(this.$store);
+      api.user.logout();
+      this.$store.state.loginUser = null;
     },
   },
 };

@@ -8,6 +8,18 @@
         ><span class="date">{{ post.creationDate }}</span>
       </div>
       <div class="content">{{ post.contents }}</div>
+      <div class="upfile-view">
+        <div class="upfile-info">
+          <span class="cnt">{{ post.upFiles.length }}개</span>
+          <span class="total-size">{{ totalSize }} bytes</span>
+        </div>
+        <div class="upfile-list">
+          <div class="upfile" v-for="file in post.upFiles" :key="file.seq">
+            <span class="fname">{{ file.originalName }}</span>
+            <span class="fsize">{{ formatSize(file) }}</span>
+          </div>
+        </div>
+      </div>
       <div class="control">
         <button @click="buttonMain">목록</button>
         <!-- <template v-if="me && me.seq === post.writer.seq">
@@ -23,7 +35,7 @@
     <Loading v-else :msg="message" />
   </div>
   <div v-else>
-    <EditForm :post="post" :mode="true" @back="back" @updated="updated" />
+    <EditForm :post="post" :mode="true" @back="back" @update="updated" />
   </div>
 </template>
 
@@ -52,26 +64,19 @@ export default {
     me() {
       return this.$store.state.loginUser;
     },
+    totalSize() {
+      let size = 0;
+      this.post.upFiles.forEach((upfile) => {
+        size += upfile.fileSize;
+      });
+      return size;
+    },
   },
   methods: {
     isMyPost() {
       return this.me && this.me.seq === this.post.writer.seq;
     },
     loadPost() {
-      // this.$store.state.loginUser
-      /*
-      axios
-        .get(
-          "http://localhost:8888/blog/api/readPosts/" + this.$route.params.post,
-          {
-            withCredentials: true,
-          }
-        )
-        .then((res) => {
-          console.log(res);
-          this.post = res.data.post;
-        });
-      */
       api.post.detail(this.$route.params.post).then((res) => {
         console.log(res);
         this.post = res.data.post;
@@ -83,6 +88,9 @@ export default {
         console.log(res);
         this.post = null;
         this.message = "삭제 완료";
+        setTimeout(() => {
+          this.$router.replace("/");
+        }, 1000);
       });
     },
     updatePost() {
@@ -94,10 +102,28 @@ export default {
     back() {
       this.readMode = true;
     },
-    updated() {
+    updated(post) {
       this.readMode = true;
-      this.post = null;
+      // this.post = null;
       this.loadPost();
+      let seq = this.post.seq;
+      let title = post.title;
+      let contents = post.contents;
+      api.post.update(seq, title, contents);
+    },
+    formatSize(file) {
+      let fileSize = file.fileSize;
+      let unit = null;
+      // 1024 or 1024 >=
+      console.log(file);
+      if (fileSize < 1024) {
+        unit = "B";
+      } else if (fileSize >= 1024) {
+        fileSize /= 1024;
+        fileSize = fileSize.toFixed(1);
+        unit = "KB";
+      }
+      return fileSize + " " + unit;
     },
   },
   mounted() {
