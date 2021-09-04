@@ -121,7 +121,7 @@ export default {
 };
 </script>
 
-<style>
+<style scoped>
 .iconNew {
   width: 18px;
   height: auto;

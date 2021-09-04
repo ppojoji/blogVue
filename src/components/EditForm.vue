@@ -21,18 +21,14 @@
         @change="attacheFile"
         accept=".txt, .gif, .jpg, .png"
       />
-      <div class="upfile-info" v-if="upfiles.length > 0">
-        <span class="cnt">{{ upfiles.length }}개</span>
-        <span class="total-size">{{ totalSize }} bytes</span>
-      </div>
-      <div class="upfile-list" v-if="upfiles.length > 0">
-        <div class="file" v-for="upfile in upfiles" :key="upfile.name">
-          <span class="fname">{{ upfile.name }}</span>
-          <span class="fsize">{{ upfile.size }} BYTES</span>
-          <button class="btn-close" @click="fileDelete(upfile)">X</button>
-        </div>
-      </div>
-      <div v-else>첨부파일 선택 가능</div>
+      <UpfileList
+        :files="upfiles"
+        nameProp="name"
+        sizeProp="size"
+        v-bind:editMode="true"
+        @fileDelete="fileDelete"
+        emptyMessage="파일 첨부 선택가능"
+      />
     </div>
     <div>
       <button id="btnSubmit" @click="update">글작성</button>
@@ -42,8 +38,11 @@
 </template>
 
 <script>
+import UpfileList from "../components/UpfileList.vue";
 /* global $ */
+// import UpfileList from "../components/UpfileList.vue";
 export default {
+  components: { UpfileList },
   props: ["post", "mode"],
   data() {
     return {
@@ -81,15 +80,6 @@ export default {
       this.upfiles.splice(idx, 1);
     },
   },
-  computed: {
-    totalSize() {
-      let size = 0;
-      this.upfiles.forEach((file) => {
-        size += file.size;
-      });
-      return size;
-    },
-  },
   mounted() {
     var script = document.createElement("script");
     this.summernoteJs = script;
@@ -120,45 +110,4 @@ export default {
 };
 </script>
 
-<style lang="scss">
-.upfile-info {
-  padding: 6px 0;
-  background-color: aliceblue;
-  border-bottom: 1px solid #69a6d5;
-  .cnt {
-    margin: 12px;
-  }
-}
-.upfile-list {
-  background-color: aliceblue;
-  .file {
-    padding: 6px;
-    .fname {
-      margin-right: 20px;
-    }
-    .fsize {
-      margin-right: 20px;
-    }
-    .btn-close {
-      border: none;
-      background: #ff6161;
-      color: white;
-      border-radius: 100px;
-      font-size: 12px;
-      padding: 4px 10px;
-      &:hover {
-        box-shadow: 1px 1px 4px #cccccc8d;
-      }
-      &:active {
-        background: #812c2c;
-      }
-    }
-    // .btn-close:hover {
-    //   box-shadow: 1px 1px 4px #cccccc8d;
-    // }
-    // .btn-close:active {
-    //   background: #812c2c;
-    // }
-  }
-}
-</style>
+<style lang="scss"></style>

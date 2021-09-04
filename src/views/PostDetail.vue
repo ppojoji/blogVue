@@ -8,18 +8,13 @@
         ><span class="date">{{ post.creationDate }}</span>
       </div>
       <div class="content">{{ post.contents }}</div>
-      <div class="upfile-view">
-        <div class="upfile-info">
-          <span class="cnt">{{ post.upFiles.length }}개</span>
-          <span class="total-size">{{ totalSize }} bytes</span>
-        </div>
-        <div class="upfile-list">
-          <div class="upfile" v-for="file in post.upFiles" :key="file.seq">
-            <span class="fname">{{ file.originalName }}</span>
-            <span class="fsize">{{ formatSize(file) }}</span>
-          </div>
-        </div>
-      </div>
+      <UpfileList
+        :files="upfiles"
+        nameProp="originalName"
+        sizeProp="fileSize"
+        v-bind:editMode="false"
+        emptyMessage="첨부파일이 없습니다."
+      />
       <div class="control">
         <button @click="buttonMain">목록</button>
         <!-- <template v-if="me && me.seq === post.writer.seq">
@@ -43,16 +38,19 @@
 import api from "../service/api";
 import Loading from "../components/Loading.vue";
 import EditForm from "../components/EditForm.vue";
+import UpfileList from "../components/UpfileList.vue";
 // import { mapState } from "vuex";
 
 export default {
   components: {
     Loading,
     EditForm,
+    UpfileList,
   },
   data() {
     return {
       post: null,
+      upfiles: [],
       readMode: true,
       message: "읽어오는 중",
     };
@@ -64,13 +62,6 @@ export default {
     me() {
       return this.$store.state.loginUser;
     },
-    totalSize() {
-      let size = 0;
-      this.post.upFiles.forEach((upfile) => {
-        size += upfile.fileSize;
-      });
-      return size;
-    },
   },
   methods: {
     isMyPost() {
@@ -80,6 +71,7 @@ export default {
       api.post.detail(this.$route.params.post).then((res) => {
         console.log(res);
         this.post = res.data.post;
+        this.upfiles = res.data.post.upFiles;
       });
     },
     deletePost() {
