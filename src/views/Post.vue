@@ -1,5 +1,12 @@
 <template>
   <div class="wrapper">
+    <div
+      v-if="summary.visible"
+      class="summary"
+      ref="summaryEl"
+      :style="{ top: summary.y + 'px', left: summary.x + 'px' }"
+      v-html="summary.content"
+    ></div>
     <div>
       <select class="custom-select" id="cata">
         <option value="">[전체보기]</option>
@@ -18,7 +25,7 @@
           <td>작성일</td>
         </tr>
       </thead>
-      <tbody id="blog-list-body">
+      <tbody class="blog-list-body">
         <tr v-for="post in lists" :key="post.seq" @click="viewPost(post.seq)">
           <td>
             <img
@@ -26,7 +33,13 @@
               src="../assets/icon_new.png"
               v-if="isRecentPost(post)"
             />
-            {{ post.title }}
+            <span
+              class="title"
+              @mouseenter="showSummary(post)"
+              @mousemove="moveSummary"
+              @mouseleave="hideSummary"
+              >{{ post.title }}</span
+            >
             <img
               class="file"
               src="../assets/file.png"
@@ -35,7 +48,14 @@
           </td>
           <td>{{ post.category }}</td>
           <td>{{ post.viewCount }}</td>
-          <td>{{ post.writer.id }}</td>
+          <td>
+            <span
+              @mouseenter="showInfo(post)"
+              @mousemove="moveSummary"
+              @mouseleave="hideSummary"
+              >{{ post.writer.id }}</span
+            >
+          </td>
           <td>{{ diff(post) }}</td>
         </tr>
       </tbody>
@@ -79,19 +99,15 @@ export default {
       cates: [],
       lists: [],
       limit: 0,
+      summary: {
+        visible: false,
+        x: 0,
+        y: 0,
+        content: "",
+      },
     };
   },
   mounted() {
-    /*
-    axios
-      .get("http://localhost:8888/blog/api/posts", { withCredentials: true })
-      .then((res) => {
-        console.log(res);
-        this.cates = res.data.cata;
-        this.lists = res.data.posts;
-        this.limit = res.data.limit;
-      });
-      */
     api.post.all().then((res) => {
       this.cates = res.data.cata;
       this.lists = res.data.posts;
@@ -117,11 +133,34 @@ export default {
     postWrite() {
       this.$router.push("/write");
     },
+    showSummary(post) {
+      // console.log(this.$refs.summaryEl, e);
+      // this.$refs.summaryEl.style.display = "block";
+      // this.$refs.summaryEl.innerHTML = post.contents;
+      this.summary.visible = true;
+      this.summary.content = post.contents;
+    },
+    moveSummary(e) {
+      // this.$refs.summaryEl.style.left = e.clientX + 20 + "px";
+      // this.$refs.summaryEl.style.top = e.clientY + "px";
+      this.summary.x = e.clientX + 20;
+      this.summary.y = e.clientY;
+    },
+    hideSummary() {
+      //this.$refs.summaryEl.style.display = "none";
+      this.summary.visible = false;
+    },
+    showInfo(post) {
+      console.log(post);
+      this.summary.visible = true;
+      this.summary.content = post.writer.email;
+    },
+    summaryContent() {},
   },
 };
 </script>
 
-<style scoped>
+<style lang="scss" scoped>
 .iconNew {
   width: 18px;
   height: auto;
@@ -129,5 +168,18 @@ export default {
 .file {
   width: 22px;
   height: auto;
+}
+.blog-list-body {
+  .title {
+    padding: 4px;
+  }
+}
+.summary {
+  padding: 8px;
+  background-color: aliceblue;
+  position: fixed;
+  top: 300px;
+  left: 200px;
+  box-shadow: 1px 1px 2px #0000009e;
 }
 </style>
