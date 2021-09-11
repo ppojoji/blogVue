@@ -17,6 +17,7 @@ export default {
         seq: null,
         title: "",
         contents: "",
+        category: null,
       },
     };
   },
@@ -24,13 +25,18 @@ export default {
     write() {},
     update(post) {
       console.log("[TITLE] ", post);
-      api.post.write(post.title, post.contents, post.upfiles).then((res) => {
-        if (res.data.success) {
-          console.log(res);
-          alert("글이 작성되었습니다.");
-          this.$router.replace("/");
-        }
-      });
+      // if (!post.cate) {
+      //   post.cate = 0;
+      // }
+      api.post
+        .write(post.title, post.contents, post.upfiles, post.cate)
+        .then((res) => {
+          if (res.data.success) {
+            console.log(res);
+            alert("글이 작성되었습니다.");
+            this.$router.replace("/");
+          }
+        });
     },
   },
 };

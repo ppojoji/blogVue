@@ -87,6 +87,9 @@ export default {
     },
     updatePost() {
       this.readMode = false; // 편집모드로 바꿈
+      api.cate.all().then((res) => {
+        console.log("[카테고리 목록] ", res);
+      });
     },
     buttonMain() {
       this.$router.push({ path: "/" });
@@ -101,7 +104,8 @@ export default {
       let seq = this.post.seq;
       let title = post.title;
       let contents = post.contents;
-      api.post.update(seq, title, contents);
+      let cateSeq = post.cate;
+      api.post.update(seq, title, contents, cateSeq);
     },
     formatSize(file) {
       let fileSize = file.fileSize;

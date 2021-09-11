@@ -5,6 +5,11 @@ axios.interceptors.request.use((config) => {
   return config;
 });
 
+const cate = {
+  all: () => {
+    return axios.get("/api/cates");
+  },
+};
 /**
  * 사용자 관련 api
  */
@@ -36,10 +41,11 @@ const post = {
     console.log("글 삭제", postSeq);
     return axios.post("/article/api/delete", params);
   },
-  write: (title, contents, upfiles) => {
+  write: (title, contents, upfiles, cates) => {
     const form = new FormData();
     form.append("title", title);
     form.append("contents", contents);
+    form.append("cate", cates);
 
     upfiles.forEach((file) => {
       form.append("files", file);
@@ -50,12 +56,13 @@ const post = {
       },
     });
   },
-  update: (postSeq, title, contents) => {
+  update: (postSeq, title, contents, cateSeq) => {
     console.log("수정!");
 
     const form = new FormData();
     form.append("title", title);
     form.append("contents", contents);
+    form.append("cateSeq", cateSeq);
 
     return axios.post("/article/api/update/" + postSeq, form, {
       headers: {
@@ -66,6 +73,7 @@ const post = {
 };
 
 export default {
+  cate,
   user,
   post,
 };

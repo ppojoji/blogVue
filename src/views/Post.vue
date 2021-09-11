@@ -23,6 +23,7 @@
           <td>조회수</td>
           <td>작성자</td>
           <td>작성일</td>
+          <td>수정시간</td>
         </tr>
       </thead>
       <tbody class="blog-list-body">
@@ -46,7 +47,9 @@
               v-if="post.upfileCount > 0"
             />
           </td>
-          <td>{{ post.category }}</td>
+          <!-- <td v-if="post.category">{{ post.category.name }}</td>
+          <td v-else></td> -->
+          <td>{{ post.category ? post.category.name : "" }}</td>
           <td>{{ post.viewCount }}</td>
           <td>
             <span
@@ -56,7 +59,8 @@
               >{{ post.writer.id }}</span
             >
           </td>
-          <td>{{ diff(post) }}</td>
+          <td>{{ diff(post.creationDate, currentTime) }}</td>
+          <td>{{ diff(post.lastDate, currentTime) }}</td>
         </tr>
       </tbody>
     </table>
@@ -105,6 +109,8 @@ export default {
         y: 0,
         content: "",
       },
+      currentTime: new Date().getTime(),
+      timer: null,
     };
   },
   mounted() {
@@ -113,11 +119,20 @@ export default {
       this.lists = res.data.posts;
       this.limit = res.data.limit;
     });
+    this.startInterval();
   },
 
   methods: {
-    diff(post) {
-      return timeDiff(post.creationDate, new Date().getTime());
+    startInterval() {
+      this.timer = window.setInterval(() => {
+        this.currentTime = new Date().getTime();
+      }, 1000);
+    },
+    stopInterval() {
+      clearInterval(this.timer);
+    },
+    diff(time, current) {
+      return timeDiff(time, current);
     },
     isRecentPost(post) {
       return new Date().getTime() - post.creationDate < this.limit;

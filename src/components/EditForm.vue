@@ -8,6 +8,7 @@
         placeholder="글제목"
         v-model="post.title"
       />
+      <Cate :initValue="cateSeq" @cateSelect="cateSelect" />
     </div>
 
     <div>
@@ -38,16 +39,19 @@
 </template>
 
 <script>
+import api from "../service/api";
+import Cate from "../components/Cate.vue";
 import UpfileList from "../components/UpfileList.vue";
 /* global $ */
-// import UpfileList from "../components/UpfileList.vue";
 export default {
-  components: { UpfileList },
-  props: ["post", "mode"],
+  components: { UpfileList, Cate },
+  props: ["post", "mode", "category"],
   data() {
     return {
       summernoteJs: null,
       upfiles: [],
+      cates: [],
+      cateSeq: 0,
       // totalSize: 0, // 파생 필드
       // upfileInfos: [],
     };
@@ -64,6 +68,7 @@ export default {
         title: this.post.title,
         contents,
         upfiles: this.upfiles,
+        cate: this.cateSeq,
       });
     },
     attacheFile(e) {
@@ -78,6 +83,10 @@ export default {
       // this.totalSize -= file.size;
 
       this.upfiles.splice(idx, 1);
+    },
+    cateSelect(cateSeq) {
+      console.log("[CATEGORY]", cateSeq);
+      this.cateSeq = cateSeq;
     },
   },
   mounted() {
@@ -106,6 +115,12 @@ export default {
       $("#content").summernote("code", contents);
     };
     document.head.appendChild(script);
+    api.post.all().then((res) => {
+      this.cates = res.data.cata;
+    });
+    if (this.mode == true) {
+      this.cateSeq = this.post.category ? this.post.category.seq : 0;
+    }
   },
 };
 </script>
