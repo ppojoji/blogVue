@@ -7,7 +7,7 @@
         <span>{{ post.writer.id }}</span
         ><span class="date">{{ post.creationDate }}</span>
       </div>
-      <div class="content">{{ post.contents }}</div>
+      <div class="content" v-html="post.contents"></div>
       <UpfileList
         :files="upfiles"
         nameProp="originalName"

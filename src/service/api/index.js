@@ -9,6 +9,11 @@ const cate = {
   all: () => {
     return axios.get("/api/cates");
   },
+  insertCate: (cateName) => {
+    const form = new FormData();
+    form.append("cate", cateName);
+    return axios.post("api/cate", form);
+  },
 };
 /**
  * 사용자 관련 api
@@ -30,6 +35,10 @@ const user = {
 const post = {
   all: () => {
     return axios.get("/api/posts");
+  },
+  findByCate: (cateSeq) => {
+    console.log("카테고리 시퀀스", cateSeq);
+    return axios.get("/api/posts/cate/" + cateSeq);
   },
   detail: (postSeq) => {
     console.log("여기서 날림!");

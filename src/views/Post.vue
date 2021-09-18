@@ -7,13 +7,21 @@
       :style="{ top: summary.y + 'px', left: summary.x + 'px' }"
       v-html="summary.content"
     ></div>
-    <div>
-      <select class="custom-select" id="cata">
-        <option value="">[전체보기]</option>
-        <option :value="cate.seq" v-for="cate in cates" :key="cate.seq">
-          {{ cate.name }}
-        </option>
-      </select>
+    <div class="post-control">
+      <Cate class="fill-width" @cateSelect="selectCate" />
+      <button
+        class="btn"
+        :class="{ enabled: timer, disabled: !timer }"
+        @click="
+          () => {
+            timer ? stopInterval() : startInterval();
+          }
+        "
+      >
+        <span class="material-icons-outlined">
+          {{ timer ? "restore" : "sync_disabled" }}</span
+        >
+      </button>
     </div>
     <table class="table">
       <thead>
@@ -59,8 +67,24 @@
               >{{ post.writer.id }}</span
             >
           </td>
-          <td>{{ diff(post.creationDate, currentTime) }}</td>
-          <td>{{ diff(post.lastDate, currentTime) }}</td>
+          <td>
+            <span
+              @mouseenter="showTimeStamp(post.creationDate)"
+              @mousemove="moveSummary"
+              @mouseleave="hideSummary"
+            >
+              {{ diff(post.creationDate, currentTime) }}
+            </span>
+          </td>
+          <td>
+            <span
+              @mouseenter="showTimeStamp(post.lastDate)"
+              @mousemove="moveSummary"
+              @mouseleave="hideSummary"
+            >
+              {{ diff(post.lastDate, currentTime) }}
+            </span>
+          </td>
         </tr>
       </tbody>
     </table>
@@ -73,6 +97,7 @@
 <script>
 //import axios from "axios";
 import api from "../service/api";
+import Cate from "../components/Cate.vue";
 
 function timeDiff(millis, curMillis) {
   var diffMillis = curMillis - millis; // 밀리세컨드
@@ -98,6 +123,7 @@ function timeDiff(millis, curMillis) {
   return month + "달전";
 }
 export default {
+  components: { Cate },
   data() {
     return {
       cates: [],
@@ -111,6 +137,7 @@ export default {
       },
       currentTime: new Date().getTime(),
       timer: null,
+      cateSeq: 0,
     };
   },
   mounted() {
@@ -121,15 +148,20 @@ export default {
     });
     this.startInterval();
   },
-
+  beforeDestroy() {
+    this.stopInterval();
+  },
   methods: {
     startInterval() {
       this.timer = window.setInterval(() => {
         this.currentTime = new Date().getTime();
+        // console.log("[TICK]", this.currentTime);
       }, 1000);
     },
     stopInterval() {
       clearInterval(this.timer);
+      this.timer = null;
+      // console.log("[PAUSED]");
     },
     diff(time, current) {
       return timeDiff(time, current);
@@ -149,7 +181,6 @@ export default {
       this.$router.push("/write");
     },
     showSummary(post) {
-      // console.log(this.$refs.summaryEl, e);
       // this.$refs.summaryEl.style.display = "block";
       // this.$refs.summaryEl.innerHTML = post.contents;
       this.summary.visible = true;
@@ -166,16 +197,60 @@ export default {
       this.summary.visible = false;
     },
     showInfo(post) {
-      console.log(post);
       this.summary.visible = true;
       this.summary.content = post.writer.email;
     },
-    summaryContent() {},
+    showTimeStamp(timeStamp) {
+      this.summary.visible = true;
+      this.summary.content = this.timeStampToDate(new Date(timeStamp));
+    },
+    timeStampToDate(date) {
+      let month = date.getMonth() + 1;
+      let day = date.getDate();
+      let hour = date.getHours();
+      let minute = date.getMinutes();
+      let second = date.getSeconds();
+
+      month = month >= 10 ? month : "0" + month;
+      day = day >= 10 ? day : "0" + day;
+      hour = hour >= 10 ? hour : "0" + hour;
+      minute = minute >= 10 ? minute : "0" + minute;
+      second = second >= 10 ? second : "0" + second;
+
+      return `${date.getFullYear()}-${month}-${day} ${hour}:${minute}:${second}`;
+      // return (
+      //   date.getFullYear() +
+      //   "-" +
+      //   month +
+      //   "-" +
+      //   day +
+      //   " " +
+      //   hour +
+      //   ":" +
+      //   minute +
+      //   ":" +
+      //   second
+      // );
+    },
+    selectCate(cateSeq) {
+      let apiFn;
+      if (cateSeq === "0") {
+        apiFn = api.post.all;
+      } else {
+        apiFn = api.post.findByCate;
+      }
+      apiFn(cateSeq).then((res) => {
+        this.lists = res.data.posts;
+      });
+    },
   },
 };
 </script>
 
 <style lang="scss" scoped>
+.wrapper {
+  padding: 0 16px;
+}
 .iconNew {
   width: 18px;
   height: auto;
@@ -196,5 +271,29 @@ export default {
   top: 300px;
   left: 200px;
   box-shadow: 1px 1px 2px #0000009e;
+}
+
+.post-control {
+  display: flex;
+  align-items: center;
+  padding: 8px 0;
+  column-gap: 8px;
+  .fill-width {
+    flex: 1 1 auto;
+  }
+  button.btn {
+    border: none;
+    padding: 4px;
+    display: block;
+    &.enabled {
+      background-color: aliceblue;
+      border: 1px solid #5086b4;
+    }
+    span {
+      font-size: 24px;
+      line-height: 1;
+      vertical-align: middle;
+    }
+  }
 }
 </style>
