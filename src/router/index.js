@@ -4,12 +4,18 @@ import Post from "../views/Post.vue";
 import Login from "../views/Login.vue";
 import UserInfo from "../views/UserInfo.vue";
 import PostDetail from "../views/PostDetail.vue";
+import Overview from "../views/Overview.vue";
 import PostWrite from "../views/PostWrite.vue";
 Vue.use(VueRouter);
 
 const routes = [
   {
     path: "/",
+    name: "Overview",
+    component: Overview,
+  },
+  {
+    path: "/posts",
     name: "Post",
     component: Post,
   },

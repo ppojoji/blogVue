@@ -79,6 +79,9 @@ const post = {
       },
     });
   },
+  overviews: () => {
+    return axios.get("/api/post/overviews");
+  },
 };
 
 export default {
