@@ -25,6 +25,7 @@ export default {
     },
     addCate() {
       this.$emit("addCate", this.cateName);
+      this.closePopup();
     },
   },
 };
