@@ -1,9 +1,9 @@
 <template>
   <div class="cate">
     <select class="custom-select" id="cata" @change="cateSelected">
-      <option value="0">[전체보기]</option>
+      <option value="">[전체보기]</option>
       <option
-        :value="cate.seq"
+        :value="cate.name"
         v-for="cate in cates"
         :key="cate.seq"
         :selected="cate.seq === initValue"
@@ -26,7 +26,10 @@
 import api from "../service/api";
 import Popup from "./ui/Popup.vue";
 import Alert from "../components/Alert.vue";
+import toast from "./ui/toast";
+// import toast from "./ui/toast";
 
+// toast.error("hello");
 export default {
   props: ["initValue"],
   components: {
@@ -66,6 +69,12 @@ export default {
     closePopup() {
       this.popupVisible = false;
     },
+    autoClosePopup() {
+      setTimeout(() => {
+        this.modalVisible = false;
+      }, 3000);
+      console.log("팝업 자동 닫힘");
+    },
     addCate(cateName) {
       console.log(cateName);
       api.cate
@@ -84,9 +93,21 @@ export default {
         .catch((error) => {
           console.log("여기로 옴");
           console.log(error);
-          this.modalVisible = true;
-          this.alertMessage = "등록된 카테고리는 재등록 할수 없습니다.";
-          this.headText = "카테고리 중복";
+          // this.modalVisible = true;
+          // this.alertMessage = "등록된 카테고리는 재등록 할수 없습니다.";
+          // this.headText = "카테고리 중복";
+          const text = "등록된 카테고리는 재등록 할수 없습니다.";
+          // const type = "error";
+          // const duration = 10000;
+
+          toast.error(text, -1);
+
+          // this.$store.commit("addMessage", {
+          //   text,
+          //   type,
+          //   duration,
+          // });
+          // this.autoClosePopup();
         });
     },
     btnClose() {

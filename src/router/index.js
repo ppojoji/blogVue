@@ -20,6 +20,11 @@ const routes = [
     component: Post,
   },
   {
+    path: "/posts/:catename",
+    name: "Post",
+    component: Post,
+  },
+  {
     path: "/login",
     name: "login",
     component: Login,

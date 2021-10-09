@@ -53,6 +53,7 @@
 
 <script>
 import axios from "axios";
+import toast from "./ui/toast";
 
 export default {
   data() {
@@ -83,7 +84,14 @@ export default {
           if (res.data.success === true) {
             console.log(res.data.user);
             this.$emit("loginSuccess", res.data.user);
+            toast.success("안녕하세요", -1);
           } else {
+            // this.$store.commit("addMessage", {
+            //   text: "로그인 실패",
+            //   type: "error",
+            //   duration: 3000,
+            // });
+            toast.error("로그인 실패", -1);
             this.error = true;
           }
         })

@@ -32,7 +32,7 @@ export default {
   computed: {
     // store 객체의 축약 필드를 맵핑해줌
     user() {
-      return this.$store.state.loginUser;
+      return this.$store.state.user.loginUser;
     },
   },
   methods: {

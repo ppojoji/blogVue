@@ -7,13 +7,16 @@
       <router-link to="/login">login</router-link>
     </div> -->
     <router-view />
+    <Toast />
   </div>
 </template>
 <script>
 import Nav from "./views/Nav.vue";
+import Toast from "./components/ui/toast/ToastUI.vue";
 export default {
   components: {
     Nav,
+    Toast,
   },
 };
 </script>

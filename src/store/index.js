@@ -2,25 +2,24 @@ import Vue from "vue";
 import Vuex from "vuex";
 import api from "../service/api";
 
+import user from "./modules/userStore";
+import toast from "./modules/toastStore";
 Vue.use(Vuex);
 
 const store = new Vuex.Store({
-  state: {
-    loginUser: null,
+  modules: {
+    user,
+    toast,
   },
-  mutations: {
-    setUser(state, user) {
-      state.loginUser = user;
-    },
-  },
-  actions: {},
-  modules: {},
 });
-
 api.user.myInfo().then((res) => {
   console.log("[로그인 확인] ", res);
   if (res.data.success) {
-    store.state.loginUser = res.data.user;
+    // store.dispatch("tryLogin", res.data.user);
+    store.commit("setUser", res.data.user);
+    // store.actions.tryLogin(res.data.user)
+    // store.state.loginUser = res.data.user;
   }
 });
+
 export default store;

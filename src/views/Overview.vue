@@ -9,7 +9,11 @@
           :key="overview.cate.seq"
         >
           <div class="cate-box">
-            <h4 class="title">{{ overview.cate.name }}</h4>
+            <h4 class="title">
+              <router-link :to="`/posts/${overview.cate.name}`"
+                >{{ overview.cate.name }}
+              </router-link>
+            </h4>
             <template v-if="overview.posts.length > 0">
               <div
                 class="post-list"

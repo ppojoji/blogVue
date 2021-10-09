@@ -141,11 +141,17 @@ export default {
     };
   },
   mounted() {
-    api.post.all().then((res) => {
-      this.cates = res.data.cata;
-      this.lists = res.data.posts;
-      this.limit = res.data.limit;
-    });
+    const cateName = this.$route.params.catename;
+    console.log("[현재카테고리]", cateName);
+    if (cateName) {
+      this.selectCate(cateName);
+    } else {
+      api.post.all().then((res) => {
+        this.cates = res.data.cata;
+        this.lists = res.data.posts;
+        this.limit = res.data.limit;
+      });
+    }
     this.startInterval();
   },
   beforeDestroy() {
@@ -232,14 +238,14 @@ export default {
       //   second
       // );
     },
-    selectCate(cateSeq) {
+    selectCate(cateName) {
       let apiFn;
-      if (cateSeq === "0") {
+      if (cateName === "") {
         apiFn = api.post.all;
       } else {
         apiFn = api.post.findByCate;
       }
-      apiFn(cateSeq).then((res) => {
+      apiFn(cateName).then((res) => {
         this.lists = res.data.posts;
       });
     },

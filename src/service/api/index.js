@@ -36,9 +36,9 @@ const post = {
   all: () => {
     return axios.get("/api/posts");
   },
-  findByCate: (cateSeq) => {
-    console.log("카테고리 시퀀스", cateSeq);
-    return axios.get("/api/posts/cate/" + cateSeq);
+  findByCate: (cateName) => {
+    console.log("카테고리 이름", cateName);
+    return axios.get("/api/posts/cate/" + cateName);
   },
   detail: (postSeq) => {
     console.log("여기서 날림!");

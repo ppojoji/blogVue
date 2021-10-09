@@ -60,7 +60,7 @@ export default {
     //   loginUser,
     // }),
     me() {
-      return this.$store.state.loginUser;
+      return this.$store.state.user.loginUser;
     },
   },
   methods: {
