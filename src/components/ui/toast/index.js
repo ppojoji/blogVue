@@ -1,34 +1,33 @@
 import store from "../../../store";
 // TODO 메소드 중복 제거 필요함
-// warning 추가해야함
-const success = (text, duration) => {
+const type = (type, text, duration) => {
   console.log("[info]", text, duration);
   store.commit("addMessage", {
     text,
-    type: "success",
+    type: `${type}`,
     duration: duration || 3000,
   });
+};
+
+const success = (text, duration) => {
+  type("success", text, duration);
 };
 
 const info = (text, duration) => {
-  console.log("[info]", text, duration);
-  store.commit("addMessage", {
-    text,
-    type: "info",
-    duration: duration || 3000,
-  });
+  type("info", text, duration);
+};
+
+const warning = (text, duration) => {
+  type("warning", text, duration);
 };
 
 const error = (text, duration) => {
-  console.log("[info]", text, duration);
-  store.commit("addMessage", {
-    text,
-    type: "error",
-    duration: duration || 3000,
-  });
+  type("error", text, duration);
 };
+
 export default {
   success,
   info,
+  warning,
   error,
 };

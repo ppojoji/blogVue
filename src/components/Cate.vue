@@ -6,7 +6,7 @@
         :value="cate.name"
         v-for="cate in cates"
         :key="cate.seq"
-        :selected="cate.seq === initValue"
+        :selected="cate.name === initValue"
       >
         {{ cate.name }}
       </option>
@@ -20,6 +20,7 @@
       :alertMessage="alertMessage"
       :headText="headText"
     />
+    <!-- <Index type="error" /> -->
   </div>
 </template>
 <script>
@@ -59,7 +60,7 @@ export default {
   },
   methods: {
     cateSelected(e) {
-      // console.log("[cate]", e.target.value);
+      //console.log("[cate]", e.target.value);
       // console.log("[cate] ", this.selectedCate);
       this.$emit("cateSelect", e.target.value);
     },
@@ -82,10 +83,6 @@ export default {
         .then((res) => {
           console.log("[카테]", res);
           console.log("[카테11]", res.data.cate.name);
-          //if (cateName === res.data.cate.name) {
-          //alert("등록된 카테고리는 재등록 할수 없습니다.");
-          //return;
-          //}
           api.cate.all().then((res) => {
             this.cates = res.data.cates;
           });
@@ -101,6 +98,7 @@ export default {
           // const duration = 10000;
 
           toast.error(text, -1);
+          // toast.type("error", text, 5000);
 
           // this.$store.commit("addMessage", {
           //   text,

@@ -8,7 +8,7 @@
       v-html="summary.content"
     ></div>
     <div class="post-control">
-      <Cate class="fill-width" @cateSelect="selectCate" />
+      <Cate class="fill-width" @cateSelect="selectCate" :initValue="cateName" />
       <button
         class="btn"
         :class="{ enabled: timer, disabled: !timer }"
@@ -35,7 +35,20 @@
         </tr>
       </thead>
       <tbody class="blog-list-body">
-        <tr v-for="post in lists" :key="post.seq" @click="viewPost(post.seq)">
+        <tr v-if="lists.length === 0">
+          <td colspan="6" style="text-align: center">
+            <div class="logo">
+              <span class="icon material-icons-outlined"> report_problem </span>
+            </div>
+            <p>글이 없습니다.</p>
+          </td>
+        </tr>
+        <tr
+          v-else
+          v-for="post in lists"
+          :key="post.seq"
+          @click="viewPost(post.seq)"
+        >
           <td>
             <img
               class="iconNew"
@@ -138,13 +151,14 @@ export default {
       currentTime: new Date().getTime(),
       timer: null,
       cateSeq: 0,
+      cateName: null,
     };
   },
   mounted() {
-    const cateName = this.$route.params.catename;
-    console.log("[현재카테고리]", cateName);
-    if (cateName) {
-      this.selectCate(cateName);
+    this.cateName = this.$route.params.catename;
+    console.log("[현재카테고리]", this.cateName);
+    if (this.cateName) {
+      this.selectCate(this.cateName);
     } else {
       api.post.all().then((res) => {
         this.cates = res.data.cata;
@@ -239,6 +253,7 @@ export default {
       // );
     },
     selectCate(cateName) {
+      console.log("1111111");
       let apiFn;
       if (cateName === "") {
         apiFn = api.post.all;
@@ -268,6 +283,15 @@ export default {
 .blog-list-body {
   .title {
     padding: 4px;
+  }
+
+  .logo {
+    text-align: center;
+    margin-top: 40px;
+
+    .icon {
+      font-size: 60px;
+    }
   }
 }
 .summary {

@@ -18,7 +18,7 @@ export default {
       console.log("[로그인] ", user);
       this.user = user;
       // 이렇게 곧바로 assign 하면 디버그하기 힘든 단점이 있습니다.
-      this.$store.state.loginUser = user;
+      this.$store.state.user.loginUser = user;
     },
   },
   components: {

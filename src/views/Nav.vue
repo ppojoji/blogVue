@@ -9,7 +9,7 @@
       <a
         href="#"
         class="menu-item"
-        v-if="$store.state.loginUser"
+        v-if="$store.state.user.loginUser"
         @click="logout"
         >LOGOUT</a
       >
@@ -37,9 +37,9 @@ export default {
   },
   methods: {
     logout() {
-      console.log(this.$store);
+      // console.log(this.$store);
       api.user.logout();
-      this.$store.state.loginUser = null;
+      this.$store.state.user.loginUser = null;
     },
   },
 };
