@@ -20,7 +20,6 @@
       :alertMessage="alertMessage"
       :headText="headText"
     />
-    <!-- <Index type="error" /> -->
   </div>
 </template>
 <script>

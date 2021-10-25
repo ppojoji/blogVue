@@ -14,6 +14,15 @@ const cate = {
     form.append("cate", cateName);
     return axios.post("api/cate", form);
   },
+  updateCate: (cateSeq, cateName) => {
+    return axios.put(`api/cate/${cateSeq}/name`, { value: cateName });
+  },
+  deleteCate: (cateSeq) => {
+    return axios.delete(`api/cate/${cateSeq}`);
+  },
+  changeOrder: (srcCateSeq, dstCateSeq) => {
+    return axios.put(`api/cate/order/${srcCateSeq}/${dstCateSeq}`);
+  },
 };
 /**
  * 사용자 관련 api
