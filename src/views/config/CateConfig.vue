@@ -15,11 +15,21 @@
     <Search />
     <button class="btn btn-primary" @click="popup">카테고리 추가</button>
     <Popup v-if="popupVisible" @closePopup="closePopup" @addCate="addCate" />
+    <RadioPopup
+      v-if="editCate"
+      :initValue="initModelValue"
+      :models="targetModel"
+      @closePopup="useYnClosePopup"
+      @updateUseYn="updateUseYn"
+      @click="popup"
+    />
     <table class="table">
       <tr>
         <th>이름</th>
         <th>글갯수</th>
-        <th>사용</th>
+        <th>사용 여부</th>
+        <th>답변 여부</th>
+        <th>게시판 타입</th>
         <th></th>
         <th>순서</th>
       </tr>
@@ -41,7 +51,13 @@
           <a href="#">{{ cate.post_cnt }}개</a>
         </td>
         <td>
-          <a href="#">{{ cate.useYn }}</a>
+          <a href="#" @click="useYnPopup(cate)">{{ cate.useYn }}</a>
+        </td>
+        <td>
+          <a href="#" @click="replyYnPopup(cate)">{{ cate.replyYN }}</a>
+        </td>
+        <td>
+          <a href="#" @click="boardTypePopup(cate)">{{ cate.type }}</a>
         </td>
         <td>
           <button class="btn btn-danger" @click="deleteCate(cate)">삭제</button>
@@ -70,6 +86,7 @@
 import toast from "../../components/ui/toast";
 import api from "../../service/api";
 import Popup from "../../components/ui/Popup.vue";
+import RadioPopup from "../../components/ui/RadioPopup.vue";
 import Search from "../../components/Search.vue";
 /**
  * 내 카테고리 조회,
@@ -97,6 +114,7 @@ export default {
   components: {
     Popup,
     Search,
+    RadioPopup,
   },
   data() {
     return {
@@ -104,6 +122,11 @@ export default {
       cates: null,
       activeCate: null,
       popupVisible: false,
+      editCate: null,
+      targetProp: null,
+      targetModel: null,
+      initModelValue: null,
+      // replyYnCate: null,
     };
   },
   mounted() {
@@ -165,7 +188,7 @@ export default {
         return;
       }
       api.cate
-        .updateCate(cate.seq, cateName)
+        .updateCate(cate.seq, "name", cateName)
         .then((res) => {
           console.log(res);
           this.activeCate.name = res.data.cate.name;
@@ -175,7 +198,7 @@ export default {
           console.log(error);
           const message =
             msg[error.response.data.cause] ||
-            `요청이 실패했습니다(${error.cause})`;
+            `요청이 실패했습니다(${error.response.data.cause})`;
           // const text = "등록된 카테고리는 재등록 할수 없습니다.";
           toast.error(message, -1);
         });
@@ -208,6 +231,39 @@ export default {
     },
     closePopup() {
       this.popupVisible = false;
+    },
+    useYnClosePopup() {
+      this.editCate = null;
+    },
+    useYnPopup(cate) {
+      this.editCate = cate;
+      this.targetProp = "useYn";
+      this.initModelValue = cate.useYn;
+      this.targetModel = [
+        { text: "사용", value: "Y" },
+        { text: "사용안함", value: "N" },
+      ];
+    },
+    replyYnPopup(cate) {
+      this.editCate = cate;
+      this.targetProp = "replyYN";
+      this.initModelValue = cate.replyYN;
+      this.targetModel = [
+        { text: "사용", value: "Y" },
+        { text: "사용안함", value: "N" },
+      ];
+    },
+    boardTypePopup(cate) {
+      console.log(cate);
+      this.editCate = cate;
+      this.targetProp = "type";
+      this.initModelValue = cate.type;
+      this.targetModel = [
+        { text: "일반", value: "NM" },
+        { text: "방명록", value: "VB" },
+        { text: "공지사항", value: "NC" },
+        { text: "사진", value: "PH" },
+      ];
     },
     addCate(cateName) {
       console.log(cateName);
@@ -245,6 +301,21 @@ export default {
       //console.log("[cate]", e.target.value);
       // console.log("[cate] ", this.selectedCate);
       this.$emit("cateSelect", e.target.value);
+    },
+    updateUseYn(selected) {
+      console.log("선택된 값", selected);
+      // (seq, selected)
+      api.cate
+        .updateCate(this.editCate.seq, this.targetProp, selected)
+        .then((res) => {
+          console.log("[res]", res);
+
+          this.editCate[this.targetProp] = selected;
+          this.useYnClosePopup();
+        });
+    },
+    updateReplyYn(selected) {
+      console.log("답글 여부", selected);
     },
   },
 };

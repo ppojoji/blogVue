@@ -84,7 +84,7 @@ export default {
           if (res.data.success === true) {
             console.log(res.data.user);
             this.$emit("loginSuccess", res.data.user);
-            toast.success("안녕하세요", -1);
+            toast.success("안녕하세요", 3000);
           } else {
             // this.$store.commit("addMessage", {
             //   text: "로그인 실패",

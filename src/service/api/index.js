@@ -14,9 +14,20 @@ const cate = {
     form.append("cate", cateName);
     return axios.post("api/cate", form);
   },
-  updateCate: (cateSeq, cateName) => {
-    return axios.put(`api/cate/${cateSeq}/name`, { value: cateName });
+  // updateCate: (cateSeq, cateName) => {
+  //   return axios.put(`api/cate/${cateSeq}/name`, { value: cateName });
+  // },
+  updateCate: (cateSeq, prop, value) => {
+    return axios.put(`api/cate/${cateSeq}`, { prop, value });
   },
+  /*
+  updateCateUse: (cateSeq, yesNo) => {
+    return axios.put(`api/cate/${cateSeq}/useYn`, { value: yesNo });
+  },
+  updateCateReplay: (cateSeq, yesNo) => {
+    return axios.put(`api/cate/${cateSeq}/replyYN`, { value: yesNo });
+  },
+  */
   deleteCate: (cateSeq) => {
     return axios.delete(`api/cate/${cateSeq}`);
   },
@@ -44,6 +55,9 @@ const user = {
 const post = {
   all: () => {
     return axios.get("/api/posts");
+  },
+  allForAdmin: () => {
+    return axios.get("/api/admin/posts");
   },
   findByCate: (cateName) => {
     console.log("카테고리 이름", cateName);
