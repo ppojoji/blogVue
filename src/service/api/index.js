@@ -20,6 +20,7 @@ const cate = {
   updateCate: (cateSeq, prop, value) => {
     return axios.put(`api/cate/${cateSeq}`, { prop, value });
   },
+
   /*
   updateCateUse: (cateSeq, yesNo) => {
     return axios.put(`api/cate/${cateSeq}/useYn`, { value: yesNo });
@@ -104,6 +105,9 @@ const post = {
   },
   overviews: () => {
     return axios.get("/api/post/overviews");
+  },
+  updateProp: (postSeq, prop, value) => {
+    return axios.put(`/api/post/${postSeq}`, { prop, value });
   },
 };
 

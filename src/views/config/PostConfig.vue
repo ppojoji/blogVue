@@ -7,6 +7,7 @@
       :initValue="initValue"
       @closePopup="editPost = null"
       :models="targetModel"
+      @updateUseYn="updateUseYn"
     />
     <table class="table">
       <tr>
@@ -15,27 +16,37 @@
         <th>삭제</th>
         <th>이동</th>
       </tr>
-      <tr v-for="list in lists" :key="list.seq">
+      <tr v-for="post in lists" :key="post.seq">
         <td>
-          {{ list.title }}
+          {{ post.title }}
         </td>
         <td>
-          <a class="" href="#open" id="openTab" @click="EditPost(list)">{{
-            list.open
-          }}</a>
-          <!-- <div class="">
-            <div class="nav-item">
-              <a class="" href="#open" id="openTab">공개</a>
-            </div>
-            <div class="nav-item">
-              <a class="" href="#private" id="privTab">비공개</a>
-            </div>
-          </div> -->
+          <a class="" @click="EditPost(post)">
+            <span v-if="post.open" class="open material-icons-outlined">
+              remove_red_eye
+            </span>
+
+            <span v-else class="hidden material-icons-outlined">
+              visibility_off
+            </span>
+          </a>
         </td>
         <td>
-          <button class="btn btn-danger">삭제</button>
+          <button class="btn btn-danger" @click="deletePost(post)">삭제</button>
         </td>
-        <td></td>
+        <td>
+          <select @change="replaceCate(post, $event)">
+            <option value="0">없음</option>
+            <option
+              v-for="cate in cates"
+              :key="cate.seq"
+              :value="cate.seq"
+              :selected="post.category && post.category.seq === cate.seq"
+            >
+              {{ cate.name }}
+            </option>
+          </select>
+        </td>
       </tr>
     </table>
   </div>
@@ -56,7 +67,9 @@ export default {
       lists: null,
       editPost: null,
       initValue: null,
+      targetProp: null,
       targetModel: null,
+      cates: null,
     };
   },
   mounted() {
@@ -64,18 +77,52 @@ export default {
       console.log(res);
       this.lists = res.data.posts;
     });
+    this.cateList();
   },
   methods: {
-    EditPost(list) {
-      this.editPost = list;
-      this.initValue = list.open ? "Y" : "N";
+    EditPost(post) {
+      this.editPost = post;
+      this.initValue = post.open ? "Y" : "N";
       this.targetModel = [
         { text: "공개글", value: "Y" },
         { text: "비공개글", value: "N" },
       ];
     },
+    updateUseYn(selected) {
+      console.log("선택된 값", selected);
+      api.post.updateProp(this.editPost.seq, "open", selected).then((res) => {
+        console.log("[res]", res);
+        this.editPost.open = selected === "Y";
+        this.editPost = selected;
+        this.editPost = null;
+      });
+    },
+    deletePost(post) {
+      api.post.remove(post.seq).then(() => {
+        //console.log(s);
+        const idx = this.lists.findIndex((d) => d.seq === post.seq);
+        this.lists.splice(idx, 1);
+      });
+    },
+    cateList() {
+      api.cate.all().then((res) => {
+        console.log(res);
+        this.cates = res.data.cates;
+      });
+    },
+    replaceCate(post, e) {
+      const cateSeq = e.target.value;
+      api.post.updateProp(post.seq, "category", cateSeq);
+    },
   },
 };
 </script>
 
-<style></style>
+<style lang="scss" scoped>
+span.hidden {
+  color: #ea5f30;
+}
+span.open {
+  color: #2cbc1e;
+}
+</style>
