@@ -5,7 +5,15 @@
       <span class="total-size">{{ totalSize }} bytes</span>
     </div>
     <div class="upfile-list" v-if="files.length > 0">
-      <div class="file" v-for="upfile in files" :key="upfile[nameProp]">
+      <div class="file" v-for="upfile in files" :key="upfile[keyProp]">
+        <div
+          class="thumnail"
+          :style="`background-image: url('${getImagePath(upfile)}')`"
+          v-if="isImageFile(upfile)"
+        ></div>
+        <div v-else class="thumnail file">
+          <span>TXT</span>
+        </div>
         <span class="fname">{{ upfile[nameProp] }}</span>
         <span class="fsize">{{ upfile[sizeProp] }} BYTES</span>
         <button class="btn-close" @click="fileDelete(upfile)" v-if="editMode">
@@ -18,6 +26,7 @@
 </template>
 
 <script>
+//import api from "../service/api";
 /**
  * 첨부파일 뷰어
  *
@@ -29,12 +38,22 @@
  * @event fileDelete - 삭제할 파일 element
  */
 export default {
-  props: ["files", "nameProp", "sizeProp", "editMode", "emptyMessage"],
+  props: [
+    "files",
+    "keyProp",
+    "nameProp",
+    "sizeProp",
+    "editMode",
+    "emptyMessage",
+    "isImageFile",
+    "getImagePath",
+  ],
   data() {
     return {};
   },
   methods: {
     fileDelete(file) {
+      console.log("file" + file);
       this.$emit("fileDelete", file);
     },
   },
@@ -46,6 +65,9 @@ export default {
       });
       return size;
     },
+  },
+  mounted() {
+    console.log("[UPFILES]", this.files);
   },
 };
 </script>
@@ -63,6 +85,7 @@ export default {
   background-color: aliceblue;
   .file {
     padding: 6px;
+    align-items: end;
     .fname {
       margin-right: 20px;
     }
@@ -81,6 +104,19 @@ export default {
       }
       &:active {
         background: #812c2c;
+      }
+    }
+    .thumnail {
+      width: 80px;
+      height: 80px;
+      background-position: center;
+      background-size: contain;
+      background-repeat: no-repeat;
+      background-color: #efefef;
+      &.file {
+        display: flex;
+        align-items: center;
+        justify-content: center;
       }
     }
     // .btn-close:hover {

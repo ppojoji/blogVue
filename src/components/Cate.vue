@@ -3,7 +3,7 @@
     <select class="custom-select" id="cata" @change="cateSelected">
       <option value="">[전체보기]</option>
       <option
-        :value="cate.name"
+        :value="cate.seq"
         v-for="cate in cates"
         :key="cate.seq"
         :selected="cate.name === initValue"
@@ -11,7 +11,7 @@
         {{ cate.name }}
       </option>
     </select>
-    <button class="btn btn-primary" @click="popup">카테고리 추가</button>
+    <!-- <button class="btn btn-primary" @click="popup">카테고리 추가</button> -->
     <Popup v-if="popupVisible" @closePopup="closePopup" @addCate="addCate" />
     <Alert
       v-if="modalVisible"
@@ -61,6 +61,8 @@ export default {
     cateSelected(e) {
       //console.log("[cate]", e.target.value);
       // console.log("[cate] ", this.selectedCate);
+
+      // FIXME e.target.value에 해당하는 cateogry 자체를 반환해야 함
       this.$emit("cateSelect", e.target.value);
     },
     popup() {

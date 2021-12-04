@@ -7,7 +7,7 @@
       :style="{ top: summary.y + 'px', left: summary.x + 'px' }"
       v-html="summary.content"
     ></div>
-    <div class="post-control">
+    <!-- <div class="post-control">
       <Cate class="fill-width" @cateSelect="selectCate" :initValue="cateName" />
       <button
         class="btn"
@@ -22,7 +22,7 @@
           {{ timer ? "restore" : "sync_disabled" }}</span
         >
       </button>
-    </div>
+    </div> -->
     <table class="table">
       <thead>
         <tr>
@@ -101,16 +101,16 @@
         </tr>
       </tbody>
     </table>
-    <div class="controls">
+    <slot name="footer" />
+    <!-- <div class="controls">
       <button class="btn btn-primary" @click="postWrite">글쓰기</button>
-    </div>
+    </div> -->
   </div>
 </template>
 
 <script>
 //import axios from "axios";
 import api from "../service/api";
-import Cate from "../components/Cate.vue";
 
 function timeDiff(millis, curMillis) {
   var diffMillis = curMillis - millis; // 밀리세컨드
@@ -136,11 +136,11 @@ function timeDiff(millis, curMillis) {
   return month + "달전";
 }
 export default {
-  components: { Cate },
+  props: ["lists"],
   data() {
     return {
-      cates: [],
-      lists: [],
+      // cates: [],
+      // lists: [],
       limit: 0,
       summary: {
         visible: false,
@@ -154,35 +154,19 @@ export default {
       cateName: null,
     };
   },
-  mounted() {
-    this.cateName = this.$route.params.catename;
-    console.log("[현재카테고리]", this.cateName);
-    if (this.cateName) {
-      this.selectCate(this.cateName);
-    } else {
-      api.post.all().then((res) => {
-        this.cates = res.data.cata;
-        this.lists = res.data.posts;
-        this.limit = res.data.limit;
-      });
-    }
-    this.startInterval();
-  },
-  beforeDestroy() {
-    this.stopInterval();
-  },
+  mounted() {},
   methods: {
-    startInterval() {
-      this.timer = window.setInterval(() => {
-        this.currentTime = new Date().getTime();
-        // console.log("[TICK]", this.currentTime);
-      }, 1000);
-    },
-    stopInterval() {
-      clearInterval(this.timer);
-      this.timer = null;
-      // console.log("[PAUSED]");
-    },
+    // startInterval() {
+    //   this.timer = window.setInterval(() => {
+    //     this.currentTime = new Date().getTime();
+    //     // console.log("[TICK]", this.currentTime);
+    //   }, 1000);
+    // },
+    // stopInterval() {
+    //   clearInterval(this.timer);
+    //   this.timer = null;
+    //   // console.log("[PAUSED]");
+    // },
     diff(time, current) {
       return timeDiff(time, current);
     },
@@ -196,9 +180,6 @@ export default {
         path: "/article/" + postSeq,
       });
       // http://localhost:8080/article/46432
-    },
-    postWrite() {
-      this.$router.push("/write");
     },
     showSummary(post) {
       // this.$refs.summaryEl.style.display = "block";

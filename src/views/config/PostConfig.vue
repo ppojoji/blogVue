@@ -9,6 +9,12 @@
       :models="targetModel"
       @updateUseYn="updateUseYn"
     />
+    <CateListPopup
+      v-if="catePost"
+      @cateClosePopup="closePopup"
+      @postCateClick="postCateSelect"
+      :cateSelect="catePost.category"
+    />
     <table class="table">
       <tr>
         <th>제목</th>
@@ -35,7 +41,7 @@
           <button class="btn btn-danger" @click="deletePost(post)">삭제</button>
         </td>
         <td>
-          <select @change="replaceCate(post, $event)">
+          <!-- <select @change="replaceCate(post, $event)">
             <option value="0">없음</option>
             <option
               v-for="cate in cates"
@@ -45,7 +51,14 @@
             >
               {{ cate.name }}
             </option>
-          </select>
+          </select> -->
+          <a
+            href="#"
+            @click="catePopup(post)"
+            v-if="post.category && post.category.name"
+            >{{ post.category.name }}</a
+          >
+          <a href="#" @click="catePopup(post)" value="0" v-else>없음</a>
         </td>
       </tr>
     </table>
@@ -56,11 +69,14 @@
 import Search from "../../components/Search.vue";
 import api from "../../service/api";
 import RadioPopup from "../../components/ui/RadioPopup.vue";
+import CateListPopup from "../../components/ui/CateListPopup.vue";
+import toast from "../../components/ui/toast";
 
 export default {
   components: {
     Search,
     RadioPopup,
+    CateListPopup,
   },
   data() {
     return {
@@ -70,6 +86,8 @@ export default {
       targetProp: null,
       targetModel: null,
       cates: null,
+      catePost: null,
+      cateSeq: 0,
     };
   },
   mounted() {
@@ -110,10 +128,29 @@ export default {
         this.cates = res.data.cates;
       });
     },
-    replaceCate(post, e) {
-      const cateSeq = e.target.value;
-      api.post.updateProp(post.seq, "category", cateSeq);
+    closePopup() {
+      this.catePost = null;
     },
+    catePopup(activePost) {
+      this.catePost = activePost;
+    },
+    postCateSelect(category) {
+      console.log("[CATEGORY]", category);
+      api.post
+        .updateProp(this.catePost.seq, "category", category.seq)
+        .then((res) => {
+          console.log(res);
+          if (res.data.success) {
+            this.catePost.category = category;
+          }
+          this.catePost = null;
+          toast.success("카테고리 변경완료", 3000);
+        });
+    },
+    // replaceCate(post, e) {
+    //   const cateSeq = e.target.value;
+    //   api.post.updateProp(post.seq, "category", cateSeq);
+    // },
   },
 };
 </script>

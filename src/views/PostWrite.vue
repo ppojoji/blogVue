@@ -28,6 +28,9 @@ export default {
       // if (!post.cate) {
       //   post.cate = 0;
       // }
+      post.upfiles.forEach((file) => {
+        delete file.src; //
+      });
       api.post
         .write(post.title, post.contents, post.upfiles, post.cate)
         .then((res) => {

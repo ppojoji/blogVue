@@ -1,11 +1,13 @@
 import Vue from "vue";
 import VueRouter from "vue-router";
-import Post from "../views/Post.vue";
+// import Post from "../views/Post.vue";
+import PostWapper from "../views/PostWrapper.vue";
 import Login from "../views/Login.vue";
 import UserInfo from "../views/UserInfo.vue";
 import PostDetail from "../views/PostDetail.vue";
 import Overview from "../views/Overview.vue";
 import PostWrite from "../views/PostWrite.vue";
+import AdminPage from "../views/admin/AdminPage.vue";
 Vue.use(VueRouter);
 
 const routes = [
@@ -17,12 +19,12 @@ const routes = [
   {
     path: "/posts",
     name: "Post",
-    component: Post,
+    component: PostWapper,
   },
   {
     path: "/posts/:catename",
     name: "Post",
-    component: Post,
+    component: PostWapper,
   },
   {
     path: "/login",
@@ -53,6 +55,11 @@ const routes = [
     path: "/write",
     name: "PostWrite",
     component: PostWrite,
+  },
+  {
+    path: "/admin",
+    name: "AdminPage",
+    component: AdminPage,
   },
 ];
 

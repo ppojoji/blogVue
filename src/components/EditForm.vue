@@ -24,8 +24,11 @@
       />
       <UpfileList
         :files="upfiles"
+        keyProp="name"
         nameProp="name"
         sizeProp="size"
+        :isImageFile="(file) => file.type.startsWith('image')"
+        :getImagePath="(file) => file.src"
         v-bind:editMode="true"
         @fileDelete="fileDelete"
         emptyMessage="파일 첨부 선택가능"
@@ -74,7 +77,17 @@ export default {
     },
     attacheFile(e) {
       console.log(e.target.files);
-      this.upfiles.push(e.target.files[0]);
+      const file = e.target.files[0];
+
+      const reader = new FileReader(); // (1)
+      reader.addEventListener("load", () => {
+        // (3)
+        const src = reader.result;
+        file.src = src;
+        this.upfiles.push(file);
+      });
+      reader.readAsDataURL(file); // (2)
+
       e.target.value = ""; // input file 초기화 하는 꼼수
       // this.totalSize += e.target.files[0].size;
     },

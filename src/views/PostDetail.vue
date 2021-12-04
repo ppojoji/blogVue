@@ -10,8 +10,13 @@
       <div class="content" v-html="post.contents"></div>
       <UpfileList
         :files="upfiles"
+        keyProp="seq"
         nameProp="originalName"
         sizeProp="fileSize"
+        :isImageFile="(file) => file.contentType.startsWith('image')"
+        :getImagePath="
+          (file) => `http://localhost:8888/blog/upfile/${file.genName}`
+        "
         v-bind:editMode="false"
         emptyMessage="첨부파일이 없습니다."
       />
@@ -75,7 +80,7 @@ export default {
       });
     },
     deletePost() {
-      console.log("삭제삭제");
+      console.log("삭제삭제", this.$route.params.post);
       api.post.remove(this.$route.params.post).then((res) => {
         console.log(res);
         this.post = null;
@@ -92,7 +97,7 @@ export default {
       });
     },
     buttonMain() {
-      this.$router.push({ path: "/" });
+      this.$router.push({ path: `/posts/${this.post.category.name}` });
     },
     back() {
       this.readMode = true;
@@ -105,6 +110,11 @@ export default {
       let title = post.title;
       let contents = post.contents;
       let cateSeq = post.cate;
+      /*
+       * 파일 업로드가 빠졌다...
+       * (1) 파일도 같이 보내든가..
+       * (2) EditForm.vue에서 파일 선택하면 바로 서버로 날려버림(업로드 바로 해버림)
+       */
       api.post.update(seq, title, contents, cateSeq);
     },
     formatSize(file) {

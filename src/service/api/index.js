@@ -69,10 +69,10 @@ const post = {
     return axios.get("/api/readPosts/" + postSeq);
   },
   remove: (postSeq) => {
-    const params = new URLSearchParams();
-    params.append("pid", postSeq);
+    const form = new FormData();
+    form.append("pid", postSeq);
     console.log("글 삭제", postSeq);
-    return axios.post("/article/api/delete", params);
+    return axios.post("/article/api/delete", form);
   },
   write: (title, contents, upfiles, cates) => {
     const form = new FormData();
@@ -111,8 +111,22 @@ const post = {
   },
 };
 
+const admin = {
+  post: {
+    delY: () => {
+      return axios.get("/admin/api/posts/del");
+    },
+    delete: (postSeq) => {
+      return axios.delete(`/admin/api/delete/${postSeq}`);
+    },
+  },
+  cate: {},
+  user: {},
+};
+export { admin, cate, user, post };
 export default {
   cate,
   user,
   post,
+  admin,
 };
