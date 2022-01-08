@@ -113,11 +113,23 @@ const post = {
 
 const admin = {
   post: {
+    list: () => {
+      return axios.get("/admin/api/posts/all");
+    },
     delY: () => {
       return axios.get("/admin/api/posts/del");
     },
     delete: (postSeq) => {
       return axios.delete(`/admin/api/delete/${postSeq}`);
+    },
+    policy: (postSeq, code) => {
+      return axios.post(`/admin/api/post/${postSeq}/policy/${code}`);
+    },
+    clearBan: (postSeq) => {
+      return axios.post(`/admin/api/post/${postSeq}/policy/null`);
+    },
+    banHistory: (postSeq) => {
+      return axios.get(`/admin/api/post/${postSeq}/ban`);
     },
   },
   cate: {},
