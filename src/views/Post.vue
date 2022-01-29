@@ -111,6 +111,7 @@
 <script>
 //import axios from "axios";
 import api from "../service/api";
+import util from "../service/util";
 
 function timeDiff(millis, curMillis) {
   var diffMillis = curMillis - millis; // 밀리세컨드
@@ -206,32 +207,7 @@ export default {
       this.summary.content = this.timeStampToDate(new Date(timeStamp));
     },
     timeStampToDate(date) {
-      let month = date.getMonth() + 1;
-      let day = date.getDate();
-      let hour = date.getHours();
-      let minute = date.getMinutes();
-      let second = date.getSeconds();
-
-      month = month >= 10 ? month : "0" + month;
-      day = day >= 10 ? day : "0" + day;
-      hour = hour >= 10 ? hour : "0" + hour;
-      minute = minute >= 10 ? minute : "0" + minute;
-      second = second >= 10 ? second : "0" + second;
-
-      return `${date.getFullYear()}-${month}-${day} ${hour}:${minute}:${second}`;
-      // return (
-      //   date.getFullYear() +
-      //   "-" +
-      //   month +
-      //   "-" +
-      //   day +
-      //   " " +
-      //   hour +
-      //   ":" +
-      //   minute +
-      //   ":" +
-      //   second
-      // );
+      return util.formatDate(date);
     },
     selectCate(cateName) {
       console.log("1111111");

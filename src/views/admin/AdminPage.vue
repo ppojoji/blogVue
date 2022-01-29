@@ -8,11 +8,33 @@
       :style="{ top: summary.y + 'px', left: summary.x + 'px' }"
       v-html="summary.content"
     ></div>
+    <div class="search-ctrl">
+      <p>{{ searchType }}</p>
+      <input type="radio" name="type" value="all" v-model="searchType" />전체글
+      <input type="radio" name="type" value="AD" v-model="searchType" />광고글
+      <input type="radio" name="type" value="PN" v-model="searchType" />음란성글
+      <input
+        type="radio"
+        name="type"
+        value="AB"
+        v-model="searchType"
+      />명예훼손,비방
+      <input type="radio" name="type" value="GM" v-model="searchType" />도박
+      <input type="radio" name="type" value="ET" v-model="searchType" />기타
+    </div>
     <!-- <PopupUI :bodyComponent="modalBody" /> -->
-    <PopupSlot v-if="popupVisible" @closePopup="popupClose()">
-      <PostPolicy :post="targetPost" @popupClose="popupClose()"> </PostPolicy>
+    <PopupSlot v-if="popupVisible" @closePopup="popupClose('popupVisible')">
+      <PostPolicy :post="targetPost" @popupClose="popupClose('popupVisible')">
+      </PostPolicy>
     </PopupSlot>
-    <table class="table">
+    <PopupSlot
+      v-if="banPopupVisible"
+      @closePopup="popupClose('banPopupVisible')"
+    >
+      <Ban :banList="banList" :post="banPost" />
+    </PopupSlot>
+    <LoadingPanel v-if="!delPosts && !isError" />
+    <table class="table" v-if="delPosts">
       <tbody>
         <tr>
           <th>제목</th>
@@ -22,8 +44,14 @@
           <th>차단 해제</th>
           <th>차단 시간</th>
         </tr>
-        <tr v-for="delY in delPosts" :key="delY.seq">
-          <td>({{ delY.seq }}){{ delY.title }}</td>
+        <tr
+          :class="{ isSuccess: !delY.ban, isBan: delY.ban }"
+          v-for="delY in delPosts"
+          :key="delY.seq"
+        >
+          <td @click="showBanHistory(delY)">
+            ({{ delY.seq }}){{ delY.title }}
+          </td>
           <td>
             <span
               @mouseenter="showTimeStamp(delY.creationDate)"
@@ -34,10 +62,20 @@
             </span>
           </td>
           <td>
-            <button class="btn btn-danger" @click="DelPost(delY)">삭제</button>
+            <button
+              class="btn"
+              :class="{ 'btn-success': !delY.ban, 'btn-danger': delY.ban }"
+              @click="DelPost(delY)"
+            >
+              삭제
+            </button>
           </td>
           <td>
-            <button class="btn btn-danger" @click="showPostView(delY)">
+            <button
+              class="btn"
+              :class="{ 'btn-success': !delY.ban, 'btn-danger': delY.ban }"
+              @click="showPostView(delY)"
+            >
               {{ banText(delY) }}
             </button>
           </td>
@@ -50,10 +88,18 @@
               해제
             </button>
           </td>
-          <td></td>
+          <td>
+            <div v-if="delY.ban">
+              {{ timeStampToDate(new Date(delY.recentBan.banTime)) }}
+            </div>
+          </td>
         </tr>
       </tbody>
     </table>
+
+    <div v-if="isError">
+      <h1>관리자가 아닙니다.</h1>
+    </div>
   </div>
 </template>
 
@@ -64,6 +110,9 @@ import { admin } from "../../service/api";
 import PopupSlot from "../../components/ui/PopupSlot.vue";
 import PostPolicy from "../admin/PostPolicy.vue";
 import api from "../../service/api";
+import Ban from "../admin/Ban.vue";
+import LoadingPanel from "../../components/LoadingPanel.vue";
+import util from "../../service/util";
 // import UserPolicy from "../admin/UserPolicy.vue";
 
 function timeDiff(millis, curMillis) {
@@ -91,7 +140,7 @@ function timeDiff(millis, curMillis) {
 }
 
 export default {
-  components: { PopupSlot, PostPolicy },
+  components: { PopupSlot, PostPolicy, Ban, LoadingPanel },
   data() {
     return {
       delPosts: null,
@@ -104,7 +153,12 @@ export default {
         content: "",
       },
       popupVisible: false,
+      banPopupVisible: false,
       targetPost: null,
+      banList: null,
+      banPost: null,
+      isError: false,
+      searchType: "all",
     };
   },
   mounted() {
@@ -113,11 +167,24 @@ export default {
     //   console.log(res);
     //   this.delPosts = res.data.posts;
     // });
-    admin.post.list().then((res) => {
-      this.delPosts = res.data.posts;
-    });
+    this.loadPost();
   },
   methods: {
+    loadPost() {
+      admin.post
+        .list(this.searchType)
+        .then((res) => {
+          this.delPosts = res.data.posts;
+        })
+        .catch((error) => {
+          console.log(error);
+          if (error.response.data.cause == "NOT_ADMIN") {
+            this.isError = error.response.data.cause;
+          } else {
+            this.isError = "UNKNOWN_ERROR";
+          }
+        });
+    },
     DelPost(post) {
       admin.post.delete(post.seq).then((res) => {
         console.log(res);
@@ -132,20 +199,9 @@ export default {
       this.summary.visible = true;
       this.summary.content = this.timeStampToDate(new Date(timeStamp));
     },
+    // 코.드.중.복(이거 다른데도 똑같이 쓰고 있음)
     timeStampToDate(date) {
-      let month = date.getMonth() + 1;
-      let day = date.getDate();
-      let hour = date.getHours();
-      let minute = date.getMinutes();
-      let second = date.getSeconds();
-
-      month = month >= 10 ? month : "0" + month;
-      day = day >= 10 ? day : "0" + day;
-      hour = hour >= 10 ? hour : "0" + hour;
-      minute = minute >= 10 ? minute : "0" + minute;
-      second = second >= 10 ? second : "0" + second;
-
-      return `${date.getFullYear()}-${month}-${day} ${hour}:${minute}:${second}`;
+      return util.formatDate(date);
     },
     moveSummary(e) {
       this.summary.x = e.clientX + 20;
@@ -158,9 +214,14 @@ export default {
       this.popupVisible = true;
       this.targetPost = post;
     },
-    popupClose() {
-      this.popupVisible = false;
+    popupClose(modalName) {
+      // popupVisible, banPopupVisble
+      // this.popupVisible = false;
+      this[modalName] = false;
     },
+    // banPopupClose() {
+    //   this.banPopupVisible = false;
+    // },
     banText(post) {
       if (post.ban == null) {
         return "공개중";
@@ -185,6 +246,21 @@ export default {
         }
       });
     },
+    showBanHistory(post) {
+      admin.post.banHistory(post.seq).then((res) => {
+        this.banPost = post;
+        console.log(res);
+        // this.banPopupVisible = res.data.ban;
+        this.banPopupVisible = true;
+        this.banList = res.data.ban;
+      });
+    },
+  }, // end methods
+  watch: {
+    searchType(cur, prev) {
+      console.log(prev, " -> ", cur);
+      this.loadPost();
+    },
   },
 };
 </script>
@@ -197,5 +273,22 @@ export default {
   top: 300px;
   left: 200px;
   box-shadow: 1px 1px 2px #0000009e;
+}
+.search-ctrl {
+  padding: 8px;
+  border: 1px solid #444444aa;
+}
+.isSuccess {
+  background-color: #e8faff;
+  color: #4b6d71;
+  .btn-success {
+    background-color: inherit;
+    color: #4b6d71;
+    border: none;
+  }
+}
+.isBan {
+  background-color: #ffe0dd;
+  color: #85281c;
 }
 </style>

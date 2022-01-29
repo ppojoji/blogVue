@@ -1,18 +1,7 @@
 <template>
   <div>
     <h3>차단 사유</h3>
-    <div class="ban-history">
-      <ul>
-        <li v-for="ban in banHistory" :key="ban.seq">
-          <span class="time">{{ ban.banTime }}</span
-          ><span class="reason">{{ banText(ban.reason) }}</span
-          ><span class="admin">({{ ban.admin }})</span>
-        </li>
-        <!-- <li>2021-11-21 광고글(admin@naver.com)</li>
-        <li>2021-11-21 광고글(admin@naver.com)</li>
-        <li>2021-11-21 해제(ok@naver.com)</li> -->
-      </ul>
-    </div>
+    <Ban :banList="banHistory" :post="post"> </Ban>
     <ul class="policy">
       <li v-for="pol in policy" :key="pol.code" @click="SetPolicy(pol)">
         {{ pol.text }}
@@ -30,7 +19,9 @@ GM: 도박
 ET: 기타
 */
 import api from "../../service/api";
+import Ban from "../admin/Ban.vue";
 export default {
+  components: { Ban },
   props: ["post"],
   data() {
     return {
@@ -60,6 +51,7 @@ export default {
         console.log(res);
         this.$emit("popupClose");
         this.post.ban = res.data.ban;
+        this.post.recentBan.banTime = res.data.banTime;
       });
     },
     banText(code) {

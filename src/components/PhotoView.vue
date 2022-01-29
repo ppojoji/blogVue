@@ -19,24 +19,13 @@
 </template>
 
 <script>
+import util from "../service/util";
 // https://picsum.photos/400/400
 export default {
   props: ["post"],
   methods: {
     timeStampToDate(date) {
-      let month = date.getMonth() + 1;
-      let day = date.getDate();
-      let hour = date.getHours();
-      let minute = date.getMinutes();
-      let second = date.getSeconds();
-
-      month = month >= 10 ? month : "0" + month;
-      day = day >= 10 ? day : "0" + day;
-      hour = hour >= 10 ? hour : "0" + hour;
-      minute = minute >= 10 ? minute : "0" + minute;
-      second = second >= 10 ? second : "0" + second;
-
-      return `${date.getFullYear()}-${month}-${day} ${hour}:${minute}:${second}`;
+      return util.formatDate(date);
     },
     viewPost(postSeq) {
       // 프로그래밍 방식으로 페이지 이동

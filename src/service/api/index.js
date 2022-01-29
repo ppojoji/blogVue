@@ -113,8 +113,8 @@ const post = {
 
 const admin = {
   post: {
-    list: () => {
-      return axios.get("/admin/api/posts/all");
+    list: (searchType) => {
+      return axios.get(`/admin/api/posts/${searchType}`);
     },
     delY: () => {
       return axios.get("/admin/api/posts/del");
