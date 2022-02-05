@@ -17,6 +17,12 @@
       <router-link class="menu-item" to="/me" v-if="user">{{
         user.email
       }}</router-link>
+      <router-link
+        class="menu-item"
+        to="/admin"
+        v-if="user && user.admin === 'Y'"
+        >관리자 페이지</router-link
+      >
     </div>
   </div>
 </template>

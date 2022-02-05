@@ -113,7 +113,15 @@ const post = {
 
 const admin = {
   post: {
-    list: (searchType) => {
+    list: (banTypes) => {
+      /*
+      /admin/api/posts/AD
+      /admin/api/posts/PN
+      /admin/api/posts/AD,PN
+
+      */
+      //  Cannot read properties of undefined (reading 'join')"
+      const searchType = banTypes.join(",");
       return axios.get(`/admin/api/posts/${searchType}`);
     },
     delY: () => {

@@ -14,6 +14,13 @@
     <div>
       <textarea class="form-elem" id="content"></textarea>
     </div>
+    <div class="taglist">
+      <input type="text" />
+      <div class="tags">
+        <span class="tag">javascript<span>X</span></span>
+        <span class="tag">js<span>X</span></span>
+      </div>
+    </div>
     <div class="upfile-view">
       <input
         type="file"
@@ -139,4 +146,19 @@ export default {
 };
 </script>
 
-<style lang="scss"></style>
+<style lang="scss">
+.taglist {
+  .tags {
+    display: flex;
+    align-items: center;
+    column-gap: 8px;
+    .tag {
+      background-color: aliceblue;
+      padding: 4px 6px;
+      border-radius: 10px;
+      border: 1px solid #3fa5f1;
+      display: inline-block;
+    }
+  }
+}
+</style>

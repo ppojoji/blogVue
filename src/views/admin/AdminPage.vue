@@ -8,19 +8,106 @@
       :style="{ top: summary.y + 'px', left: summary.x + 'px' }"
       v-html="summary.content"
     ></div>
-    <div class="search-ctrl">
-      <p>{{ searchType }}</p>
-      <input type="radio" name="type" value="all" v-model="searchType" />전체글
-      <input type="radio" name="type" value="AD" v-model="searchType" />광고글
-      <input type="radio" name="type" value="PN" v-model="searchType" />음란성글
-      <input
-        type="radio"
-        name="type"
-        value="AB"
-        v-model="searchType"
-      />명예훼손,비방
-      <input type="radio" name="type" value="GM" v-model="searchType" />도박
-      <input type="radio" name="type" value="ET" v-model="searchType" />기타
+    <div class="search-ctrl" v-if="chkVisible">
+      <label
+        ><input
+          type="radio"
+          name="type"
+          value="all"
+          v-model="searchType"
+        />전체글</label
+      >
+      <label
+        ><input
+          type="radio"
+          name="type"
+          value="AD"
+          v-model="searchType"
+        />광고글</label
+      >
+      <label
+        ><input
+          type="radio"
+          name="type"
+          value="PN"
+          v-model="searchType"
+        />음란성글</label
+      >
+      <label
+        ><input
+          type="radio"
+          name="type"
+          value="AB"
+          v-model="searchType"
+        />명예훼손/비방</label
+      >
+      <label
+        ><input
+          type="radio"
+          name="type"
+          value="GM"
+          v-model="searchType"
+        />도박</label
+      >
+      <label
+        ><input
+          type="radio"
+          name="type"
+          value="ET"
+          v-model="searchType"
+        />기타</label
+      >
+      <button class="btn btnShow" @click="chkShow(false)">
+        <span class="material-icons-outlined"> keyboard_arrow_down </span>
+      </button>
+    </div>
+    <div class="search-ctrl" v-else>
+      <label
+        ><input
+          type="checkbox"
+          name="chk"
+          value="AD"
+          v-model="chkType"
+        />광고글</label
+      >
+      <label
+        ><input
+          type="checkbox"
+          name="chk"
+          value="PN"
+          v-model="chkType"
+        />음란성글</label
+      >
+      <label
+        ><input
+          type="checkbox"
+          name="chk"
+          value="AB"
+          v-model="chkType"
+        />명예훼손/비방</label
+      >
+      <label
+        ><input
+          type="checkbox"
+          name="chk"
+          value="GM"
+          v-model="chkType"
+        />도박</label
+      >
+      <label
+        ><input
+          type="checkbox"
+          name="chk"
+          value="ET"
+          v-model="chkType"
+        />기타</label
+      >
+      <button class="btn btn-primary" @click="search()">조회</button>
+      <button class="btn btnShow">
+        <span class="material-icons-outlined" @click="chkShow(true)">
+          keyboard_arrow_up
+        </span>
+      </button>
     </div>
     <!-- <PopupUI :bodyComponent="modalBody" /> -->
     <PopupSlot v-if="popupVisible" @closePopup="popupClose('popupVisible')">
@@ -116,27 +203,7 @@ import util from "../../service/util";
 // import UserPolicy from "../admin/UserPolicy.vue";
 
 function timeDiff(millis, curMillis) {
-  var diffMillis = curMillis - millis; // 밀리세컨드
-  var sec = parseInt(diffMillis / 1000); // 초단위
-  var min = parseInt(sec / 60); // 분단위
-  if (min === 0) {
-    return sec + "초전";
-  }
-
-  var hour = parseInt(min / 60); // 시간
-  if (hour === 0) {
-    return min + "분전";
-  }
-  var days = parseInt(hour / 24); // 일전~
-  if (days === 0) {
-    return hour + "시간전";
-  }
-
-  var month = parseInt(days / 30); // ~달전
-  if (month === 0) {
-    return days + "일전";
-  }
-  return month + "달전";
+  return util.timeDiff(millis, curMillis);
 }
 
 export default {
@@ -159,6 +226,8 @@ export default {
       banPost: null,
       isError: false,
       searchType: "all",
+      chkType: ["AD"],
+      chkVisible: false,
     };
   },
   mounted() {
@@ -167,12 +236,12 @@ export default {
     //   console.log(res);
     //   this.delPosts = res.data.posts;
     // });
-    this.loadPost();
+    this.loadPost(["all"]);
   },
   methods: {
-    loadPost() {
+    loadPost(banTypes) {
       admin.post
-        .list(this.searchType)
+        .list(banTypes)
         .then((res) => {
           this.delPosts = res.data.posts;
         })
@@ -255,11 +324,31 @@ export default {
         this.banList = res.data.ban;
       });
     },
+    chkShow(visible) {
+      console.log("11111");
+      this.chkVisible = visible;
+
+      if (this.chkVisible == true) {
+        this.loadPost([this.searchType]);
+      } else if (this.chkVisible == false) {
+        this.loadPost(this.chkType);
+      }
+    },
+    toggleChk() {
+      this.chkVisible = !this.chkVisible;
+    },
+    search() {
+      console.log(this.chkType);
+      this.loadPost(this.chkType);
+    },
   }, // end methods
   watch: {
+    // TODO 체크박스 바꾸면 그냥 업데이트 되게 해주세요.(라디오 버튼처럼)
+    // 조회 버튼은 없애도 됨
+    // TODO 관리자 페이지에서 검색 상태를 저장했다가 페이지에 반영하고 싶음
     searchType(cur, prev) {
       console.log(prev, " -> ", cur);
-      this.loadPost();
+      this.loadPost([this.searchType]);
     },
   },
 };
@@ -277,6 +366,16 @@ export default {
 .search-ctrl {
   padding: 8px;
   border: 1px solid #444444aa;
+  display: flex;
+  align-items: center;
+  column-gap: 8px;
+  .btnShow {
+    margin-left: auto;
+  }
+}
+
+label {
+  margin-bottom: 0px;
 }
 .isSuccess {
   background-color: #e8faff;
@@ -290,5 +389,10 @@ export default {
 .isBan {
   background-color: #ffe0dd;
   color: #85281c;
+  .btn-danger {
+    background-color: inherit;
+    color: #85281c;
+    border: none;
+  }
 }
 </style>
