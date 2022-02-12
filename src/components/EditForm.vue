@@ -15,11 +15,16 @@
       <textarea class="form-elem" id="content"></textarea>
     </div>
     <div class="taglist">
-      <input type="text" />
-      <div class="tags">
-        <span class="tag">javascript<span>X</span></span>
-        <span class="tag">js<span>X</span></span>
-      </div>
+      <input type="text" @keyup.enter="tagInsert($event)" />
+      <!-- <div class="tags">
+        <span class="tag" v-for="delTag in delTags" :key="delTag.seq"
+          >{{ delTag.tagName }}
+          <span class="close material-icons-outlined" @click="tagClose(delTag)"
+            >close</span
+          >
+        </span>
+      </div> -->
+      <TagView :tags="delTags" @tagclose="tagClose" :editable="true" />
     </div>
     <div class="upfile-view">
       <input
@@ -52,9 +57,10 @@
 import api from "../service/api";
 import Cate from "../components/Cate.vue";
 import UpfileList from "../components/UpfileList.vue";
+import TagView from "../views/TagView.vue";
 /* global $ */
 export default {
-  components: { UpfileList, Cate },
+  components: { UpfileList, Cate, TagView },
   props: ["post", "mode", "category"],
   data() {
     return {
@@ -62,6 +68,7 @@ export default {
       upfiles: [],
       cates: [],
       cateSeq: 0,
+      delTags: [], // []
       // totalSize: 0, // 파생 필드
       // upfileInfos: [],
     };
@@ -80,6 +87,7 @@ export default {
         contents,
         upfiles: this.upfiles,
         cate: this.cateSeq,
+        tags: this.delTags, // [{seq, tagName}, {seq, tagName}]
       });
     },
     attacheFile(e) {
@@ -104,6 +112,42 @@ export default {
       // this.totalSize -= file.size;
 
       this.upfiles.splice(idx, 1);
+    },
+    tagClose(tag) {
+      //api.post.tagDelete().then((res) => {
+      //console.log(res);
+      console.log("닫기", tag);
+      const idx = this.delTags.findIndex((t) => t === tag);
+
+      this.delTags.splice(idx, 1);
+      //});
+    },
+    /*
+        $('#input).keyup((e) => {
+          e.target.value
+          if(e.keyCode === 13) {
+
+          }
+        })
+        */
+    tagInsert(e) {
+      console.log("[여기]", e);
+      /*
+      this.delTags.push({
+        seq: parseInt(Math.random() * 100000),
+        tagName: e.target.value,
+      });
+       e.target.value = "";
+       */
+      api.post.tagInsert(e.target.value).then((res) => {
+        console.log(res);
+        // this.delTags.push({
+        //   seq: res.data.seq,
+        //   tagName: res.data.tagName,
+        // });
+        this.delTags.push(res.data.tag); // {success: true, tag: {seq: 2333, tagName: 'gasdfasd'}}
+        e.target.value = "";
+      });
     },
     cateSelect(cateSeq) {
       console.log("[CATEGORY]", cateSeq);
@@ -146,19 +190,4 @@ export default {
 };
 </script>
 
-<style lang="scss">
-.taglist {
-  .tags {
-    display: flex;
-    align-items: center;
-    column-gap: 8px;
-    .tag {
-      background-color: aliceblue;
-      padding: 4px 6px;
-      border-radius: 10px;
-      border: 1px solid #3fa5f1;
-      display: inline-block;
-    }
-  }
-}
-</style>
+<style lang="scss"></style>

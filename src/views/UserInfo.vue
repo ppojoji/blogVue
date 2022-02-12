@@ -8,19 +8,11 @@
       <div class="menu-item">
         <a href="#" @click="changeMenu('post')">내글</a>
       </div>
-      <div class="menu-item">
-        <a href="#" @click="changeMenu('auth')">권한 관리</a>
-      </div>
-      <div class="menu-item">
-        <a href="#" @click="changeMenu('code')">코드 관리</a>
-      </div>
     </div>
     <div class="main-area">
       <!-- <h3>여기에 메뉴의 내용</h3> -->
       <CateConfig v-if="menuType === 'cate'" />
       <PostConfig v-else-if="menuType === 'post'" />
-      <AuthConfig v-else-if="menuType === 'auth'" />
-      <CodeConfig v-else-if="menuType === 'code'" />
       <div v-else>없는 메뉴</div>
     </div>
   </div>
@@ -29,11 +21,9 @@
 <script>
 import CateConfig from "./config/CateConfig.vue";
 import PostConfig from "./config/PostConfig.vue";
-import AuthConfig from "./config/AuthConfig.vue";
-import CodeConfig from "./config/CodeConfig.vue";
 
 export default {
-  components: { CateConfig, PostConfig, AuthConfig, CodeConfig },
+  components: { CateConfig, PostConfig },
   data() {
     return {
       menuType: "cate",

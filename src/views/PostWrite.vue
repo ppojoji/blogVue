@@ -24,7 +24,7 @@ export default {
   methods: {
     write() {},
     update(post) {
-      console.log("[TITLE] ", post);
+      console.log("[TITLE] ", post); // posts.tags [{}, {}, {}]
       // if (!post.cate) {
       //   post.cate = 0;
       // }
@@ -32,7 +32,7 @@ export default {
         delete file.src; //
       });
       api.post
-        .write(post.title, post.contents, post.upfiles, post.cate)
+        .write(post.title, post.contents, post.upfiles, post.cate, post.tags)
         .then((res) => {
           if (res.data.success) {
             console.log(res);

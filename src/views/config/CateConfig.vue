@@ -12,7 +12,6 @@
         {{ cate.name }}
       </option>
     </select>
-    <Search />
     <button class="btn btn-primary" @click="popup">카테고리 추가</button>
     <Popup v-if="popupVisible" @closePopup="closePopup" @addCate="addCate" />
     <RadioPopup
@@ -87,7 +86,6 @@ import toast from "../../components/ui/toast";
 import api from "../../service/api";
 import Popup from "../../components/ui/Popup.vue";
 import RadioPopup from "../../components/ui/RadioPopup.vue";
-import Search from "../../components/Search.vue";
 /**
  * 내 카테고리 조회,
  * 삭제,
@@ -113,7 +111,6 @@ export default {
   props: ["initValue"],
   components: {
     Popup,
-    Search,
     RadioPopup,
   },
   data() {

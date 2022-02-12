@@ -74,11 +74,15 @@ const post = {
     console.log("글 삭제", postSeq);
     return axios.post("/article/api/delete", form);
   },
-  write: (title, contents, upfiles, cates) => {
+  write: (title, contents, upfiles, cates, tags) => {
     const form = new FormData();
     form.append("title", title);
     form.append("contents", contents);
     form.append("cate", cates);
+    form.append(
+      "tag",
+      tags.map((t) => t.seq)
+    );
 
     upfiles.forEach((file) => {
       form.append("files", file);
@@ -108,6 +112,14 @@ const post = {
   },
   updateProp: (postSeq, prop, value) => {
     return axios.put(`/api/post/${postSeq}`, { prop, value });
+  },
+  /**
+   * 주어진 태그를 조회함
+   * @param {태그명} tagName
+   * @returns
+   */
+  tagInsert: (tagName) => {
+    return axios.get(`/api/tagSelect/${tagName}`);
   },
 };
 

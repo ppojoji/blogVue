@@ -1,7 +1,6 @@
 <template>
   <div>
     <h3>내글 편집 화면</h3>
-    <Search />
     <RadioPopup
       v-if="editPost"
       :initValue="initValue"
@@ -66,7 +65,6 @@
 </template>
 
 <script>
-import Search from "../../components/Search.vue";
 import api from "../../service/api";
 import RadioPopup from "../../components/ui/RadioPopup.vue";
 import CateListPopup from "../../components/ui/CateListPopup.vue";
@@ -74,7 +72,6 @@ import toast from "../../components/ui/toast";
 
 export default {
   components: {
-    Search,
     RadioPopup,
     CateListPopup,
   },
