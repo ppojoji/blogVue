@@ -123,6 +123,11 @@ const post = {
   },
 };
 
+const tag = {
+  posts: () => {
+    return axios.get(`/api/postBytag`);
+  },
+};
 const admin = {
   post: {
     list: (banTypes) => {
@@ -161,4 +166,5 @@ export default {
   user,
   post,
   admin,
+  tag,
 };

@@ -1,5 +1,8 @@
 <template>
-  <div class="tags">
+  <div
+    class="tags"
+    :class="{ inline: inline, sm: size === 'sm', lg: size === 'lg' }"
+  >
     <span class="tag" v-for="delTag in tags" :key="delTag.seq"
       >{{ delTag.tagName }}
       <span
@@ -14,7 +17,10 @@
 
 <script>
 export default {
-  props: ["tags", "editable"], // :editable="{true}"
+  /**
+   size: ['sm'|'md'|'lg'] 태그의 크기
+   */
+  props: ["tags", "editable", "inline", "size"], // :editable="{true}"
   methods: {
     tagClosed(tag) {
       this.$emit("tagclose", tag);
@@ -23,11 +29,20 @@ export default {
 };
 </script>
 
-<style lang="scss">
+<style lang="scss" scoped>
 .tags {
   display: flex;
   align-items: center;
   column-gap: 8px;
+  &.sm {
+    font-size: 12px;
+  }
+  &.lg {
+    font-size: 20px;
+  }
+  &.inline {
+    display: inline-flex;
+  }
   .tag {
     background-color: aliceblue;
     padding: 4px 6px;

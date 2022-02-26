@@ -8,6 +8,7 @@ import PostDetail from "../views/PostDetail.vue";
 import Overview from "../views/Overview.vue";
 import PostWrite from "../views/PostWrite.vue";
 import AdminPage from "../views/admin/AdminPage.vue";
+import Tag from "../views/Tag.vue";
 Vue.use(VueRouter);
 
 const routes = [
@@ -40,6 +41,11 @@ const routes = [
     component: function () {
       return import(/* webpackChunkName: "about" */ "../views/About.vue");
     },
+  },
+  {
+    path: "/tags",
+    name: "Tag",
+    component: Tag,
   },
   {
     path: "/article/:post",
