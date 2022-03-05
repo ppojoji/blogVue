@@ -47,7 +47,9 @@
       />
     </div>
     <div>
-      <button id="btnSubmit" @click="update">글작성</button>
+      <button @click="update">
+        {{ editMode ? "수정하기" : "글작성" }}
+      </button>
       <button @click="cancel">취소</button>
     </div>
   </div>
@@ -61,7 +63,7 @@ import TagView from "../views/TagView.vue";
 /* global $ */
 export default {
   components: { UpfileList, Cate, TagView },
-  props: ["post", "mode", "category"],
+  props: ["post", "editMode", "category"],
   data() {
     return {
       summernoteJs: null,
@@ -157,6 +159,7 @@ export default {
   mounted() {
     var script = document.createElement("script");
     this.summernoteJs = script;
+    this.delTags = this.post.tags;
     script.type = "text/javascript";
     script.src =
       "https://cdn.jsdelivr.net/npm/summernote@0.8.18/dist/summernote-bs4.min.js";
@@ -183,7 +186,7 @@ export default {
     api.post.all().then((res) => {
       this.cates = res.data.cata;
     });
-    if (this.mode == true) {
+    if (this.editMode == true) {
       this.cateSeq = this.post.category ? this.post.category.seq : 0;
     }
   },

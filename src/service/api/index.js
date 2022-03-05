@@ -79,10 +79,10 @@ const post = {
     form.append("title", title);
     form.append("contents", contents);
     form.append("cate", cates);
-    form.append(
-      "tag",
-      tags.map((t) => t.seq)
-    );
+
+    const tagSeqList = tags.map((t) => t.seq);
+    form.append("tag", tagSeqList);
+    // tag: [34, 56, 78]
 
     upfiles.forEach((file) => {
       form.append("files", file);
@@ -93,13 +93,19 @@ const post = {
       },
     });
   },
-  update: (postSeq, title, contents, cateSeq) => {
+  update: (postSeq, title, contents, cateSeq, tags) => {
     console.log("수정!");
 
+    const tagSeqList = tags.map((t) => t.seq);
     const form = new FormData();
     form.append("title", title);
     form.append("contents", contents);
     form.append("cateSeq", cateSeq);
+    form.append("tag", tagSeqList);
+
+    /*
+    [{seq, }, {seq, }, {seq, }] => [seq, seq, seq, ...]
+    */
 
     return axios.post("/article/api/update/" + postSeq, form, {
       headers: {
@@ -112,6 +118,9 @@ const post = {
   },
   updateProp: (postSeq, prop, value) => {
     return axios.put(`/api/post/${postSeq}`, { prop, value });
+  },
+  findByTag: (tagSeq) => {
+    return axios.get(`/api/post/tag/${tagSeq}`);
   },
   /**
    * 주어진 태그를 조회함

@@ -1,7 +1,7 @@
 <template>
   <div>
     <h3>글쓰기 화면입니다.</h3>
-    <EditForm :mode="false" :post="post" @update="update" />
+    <EditForm :editMode="false" :post="post" @update="update" />
   </div>
 </template>
 
@@ -18,6 +18,7 @@ export default {
         title: "",
         contents: "",
         category: null,
+        tags: [],
       },
     };
   },

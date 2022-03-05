@@ -37,7 +37,7 @@
     <Loading v-else :msg="message" />
   </div>
   <div v-else>
-    <EditForm :post="post" :mode="true" @back="back" @update="updated" />
+    <EditForm :post="post" :editMode="true" @back="back" @update="updated" />
   </div>
 </template>
 
@@ -112,17 +112,22 @@ export default {
     updated(post) {
       this.readMode = true;
       // this.post = null;
-      this.loadPost();
+
       let seq = this.post.seq;
       let title = post.title;
       let contents = post.contents;
       let cateSeq = post.cate;
+      let tags = post.tags;
+      console.log("[수정한태그]", tags);
       /*
        * 파일 업로드가 빠졌다...
        * (1) 파일도 같이 보내든가..
        * (2) EditForm.vue에서 파일 선택하면 바로 서버로 날려버림(업로드 바로 해버림)
        */
-      api.post.update(seq, title, contents, cateSeq);
+      api.post.update(seq, title, contents, cateSeq, tags).then((res) => {
+        console.log(res);
+        this.loadPost();
+      });
     },
     formatSize(file) {
       let fileSize = file.fileSize;
