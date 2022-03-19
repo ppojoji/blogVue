@@ -1,8 +1,23 @@
 <template>
   <div v-if="readMode">
-    <h3>글 상세보기 ({{ $route.params.post }})</h3>
     <div class="post-detail" v-if="post">
-      <div class="title">{{ post.title }}</div>
+      <div class="title">
+        <h3>{{ post.title }}</h3>
+        <span
+          class="btn-bookmark material-icons-outlined"
+          v-if="bookMarked"
+          @click="bookMark(post)"
+        >
+          star
+        </span>
+        <span
+          class="btn-bookmark material-icons-outlined"
+          v-else
+          @click="bookMark(post)"
+        >
+          star_outline
+        </span>
+      </div>
       <div class="writer">
         <span>{{ post.writer.id }}</span
         ><span class="date">{{ post.creationDate }}</span>
@@ -57,8 +72,19 @@ import EditForm from "../components/EditForm.vue";
 import UpfileList from "../components/UpfileList.vue";
 import TagView from "../views/TagView.vue";
 import PostOfTag from "../components/PostOfTag.vue";
-
+import toast from "../components/ui/toast";
 // import { mapState } from "vuex";
+
+const msg = {
+  NOT_OWNER_OF_POST: "글의 소유자가 아닙니다",
+};
+const showToast = (cause) => {
+  let message = msg[cause];
+  if (!message) {
+    message = "오류가 발생했습니다.";
+  }
+  toast.error(msg[cause], 5000);
+};
 
 export default {
   components: {
@@ -76,6 +102,7 @@ export default {
       message: "읽어오는 중",
       //tagPosts: null,
       activeTag: null,
+      bookMarked: false,
       // tags: [],
     };
   },
@@ -96,19 +123,30 @@ export default {
         console.log(res);
         this.post = res.data.post;
         this.upfiles = res.data.post.upFiles;
+        if (res.data.bookMark === 0) {
+          this.bookMarked = false;
+        } else {
+          this.bookMarked = true;
+        }
         // this.tags = res.data.post.tags;
       });
     },
     deletePost() {
       console.log("삭제삭제", this.$route.params.post);
-      api.post.remove(this.$route.params.post).then((res) => {
-        console.log(res);
-        this.post = null;
-        this.message = "삭제 완료";
-        setTimeout(() => {
-          this.$router.replace("/");
-        }, 1000);
-      });
+      api.post
+        .remove(this.$route.params.post)
+        .then((res) => {
+          console.log(res);
+          this.post = null;
+          this.message = "삭제 완료";
+          setTimeout(() => {
+            this.$router.replace("/");
+          }, 1000);
+        })
+        .catch((err) => {
+          // toast.error(msg[err.response.data.cause], 5000);
+          showToast(err.response.data.cause);
+        });
     },
     updatePost() {
       this.readMode = false; // 편집모드로 바꿈
@@ -137,10 +175,16 @@ export default {
        * (1) 파일도 같이 보내든가..
        * (2) EditForm.vue에서 파일 선택하면 바로 서버로 날려버림(업로드 바로 해버림)
        */
-      api.post.update(seq, title, contents, cateSeq, tags).then((res) => {
-        console.log(res);
-        this.loadPost();
-      });
+      api.post
+        .update(seq, title, contents, cateSeq, tags)
+        .then((res) => {
+          console.log(res);
+          this.loadPost();
+        })
+        .catch((err) => {
+          //toast.error(msg[err.response.data.cause], 50000);
+          showToast(err.response.data.cause);
+        });
     },
     formatSize(file) {
       let fileSize = file.fileSize;
@@ -170,6 +214,20 @@ export default {
         this.$router.push({ path: `/article/${post.seq}` });
       }
     },
+    bookMark(post) {
+      // 나중에 코드를 정리해야함
+      if (this.bookMarked) {
+        api.user.removeBookMark(post.seq).then((res) => {
+          console.log(res);
+        });
+        this.bookMarked = false;
+      } else {
+        api.user.bookMark(post.seq).then((res) => {
+          console.log(res);
+        });
+        this.bookMarked = true;
+      }
+    },
   },
   watch: {
     "$route.params.post"(cur, prev) {
@@ -183,4 +241,16 @@ export default {
 };
 </script>
 
-<style></style>
+<style lang="scss" scoped>
+.title {
+  display: flex;
+  align-items: center;
+  h3 {
+    margin: 0px;
+  }
+  .btn-bookmark {
+    cursor: pointer;
+    user-select: none;
+  }
+}
+</style>

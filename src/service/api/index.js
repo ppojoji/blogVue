@@ -49,6 +49,18 @@ const user = {
   logout: () => {
     return axios.get("/logout");
   },
+  bookMark: (postSeq) => {
+    // who:34
+    // what: 938
+    // bmk <> un bookmark
+    return axios.post(`/user/bookmark/${postSeq}`);
+  },
+  removeBookMark: (postSeq) => {
+    // who:34
+    // what: 938
+    // bmk <> un bookmark
+    return axios.delete(`/user/bookmark/${postSeq}`);
+  },
 };
 /**
  * 게시물 관련 api
