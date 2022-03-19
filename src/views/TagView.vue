@@ -3,7 +3,11 @@
     class="tags"
     :class="{ inline: inline, sm: size === 'sm', lg: size === 'lg' }"
   >
-    <span class="tag" v-for="delTag in tags" :key="delTag.seq"
+    <span
+      class="tag"
+      v-for="delTag in tags"
+      :key="delTag.seq"
+      @click="tagSelected(delTag)"
       >{{ delTag.tagName }}
       <span
         v-if="editable"
@@ -24,6 +28,9 @@ export default {
   methods: {
     tagClosed(tag) {
       this.$emit("tagclose", tag);
+    },
+    tagSelected(tag) {
+      this.$emit("tagSelected", tag);
     },
   },
 };

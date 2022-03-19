@@ -8,7 +8,16 @@
         ><span class="date">{{ post.creationDate }}</span>
       </div>
       <div class="content" v-html="post.contents"></div>
-      <TagView :tags="post.tags" />
+      <TagView :tags="post.tags" @tagSelected="tagList" />
+      <!-- <div v-for="tagPost in tagPosts" :key="tagPost.seq">
+        {{ tagPost.title }}
+      </div> -->
+      <PostOfTag
+        v-if="activeTag"
+        :tag="activeTag"
+        @activePost="postClicked"
+        :currentPost="post"
+      />
       <UpfileList
         :files="upfiles"
         keyProp="seq"
@@ -47,6 +56,7 @@ import Loading from "../components/Loading.vue";
 import EditForm from "../components/EditForm.vue";
 import UpfileList from "../components/UpfileList.vue";
 import TagView from "../views/TagView.vue";
+import PostOfTag from "../components/PostOfTag.vue";
 
 // import { mapState } from "vuex";
 
@@ -56,6 +66,7 @@ export default {
     EditForm,
     UpfileList,
     TagView,
+    PostOfTag,
   },
   data() {
     return {
@@ -63,6 +74,8 @@ export default {
       upfiles: [],
       readMode: true,
       message: "읽어오는 중",
+      //tagPosts: null,
+      activeTag: null,
       // tags: [],
     };
   },
@@ -142,6 +155,26 @@ export default {
         unit = "KB";
       }
       return fileSize + " " + unit;
+    },
+    tagList(tag) {
+      console.log("tag", tag);
+      this.activeTag = tag;
+      // api.post.findByTag(tag.seq).then((res) => {
+      //   console.log("!!", res);
+      //   this.tagPosts = res.data;
+      //   this.activeTag = tag;
+      // });
+    },
+    postClicked(post) {
+      if (this.post.seq !== post.seq) {
+        this.$router.push({ path: `/article/${post.seq}` });
+      }
+    },
+  },
+  watch: {
+    "$route.params.post"(cur, prev) {
+      console.log("[router change]", prev, " > ", cur);
+      this.loadPost();
     },
   },
   mounted() {

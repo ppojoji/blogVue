@@ -23,6 +23,7 @@
         v-if="user && user.admin === 'Y'"
         >관리자 페이지</router-link
       >
+      <router-link class="menu-item" to="/tags">태그</router-link>
     </div>
   </div>
 </template>

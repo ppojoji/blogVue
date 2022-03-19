@@ -13,7 +13,7 @@
         {{ tag.tagName }}({{ tag.posts.length }})
       </div>
     </div>
-    <div class="posts">
+    <!-- <div class="posts">
       <h3 v-if="activeTag">{{ activeTag.tagName }}</h3>
       <div
         class="post"
@@ -24,9 +24,11 @@
         {{ post.title }}
       </div>
       <div v-if="posts && posts.length === 0">관련 글이 없습니다.</div>
-    </div>
+    </div> -->
+    <PostOfTag v-if="activeTag" :tag="activeTag" @activePost="popupPosts" />
     <PopupSlot v-if="activePost" @closePopup="closePopup()">
       <p>{{ activePost.contents }}</p>
+      <button @click="detail()">자세히</button>
     </PopupSlot>
     <!--
     <div class="valid tags">
@@ -49,8 +51,9 @@
 <script>
 import api from "../service/api";
 import PopupSlot from "../components/ui/PopupSlot.vue";
+import PostOfTag from "../components/PostOfTag.vue";
 export default {
-  components: { PopupSlot },
+  components: { PopupSlot, PostOfTag },
   data() {
     return {
       tags: null,
@@ -107,17 +110,22 @@ export default {
   methods: {
     TagOrder() {},
     tagList(tag) {
-      api.post.findByTag(tag.seq).then((res) => {
-        console.log(res);
-        this.posts = res.data;
-        this.activeTag = tag;
-      });
+      this.activeTag = tag;
+      // api.post.findByTag(tag.seq).then((res) => {
+      //   console.log(res);
+      //   this.posts = res.data;
+      //   this.activeTag = tag;
+      // });
     },
     popupPosts(post) {
       this.activePost = post;
     },
     closePopup() {
       this.activePost = null;
+    },
+    detail() {
+      //this.activePost = this.activePost.seq;
+      this.$router.push({ path: `/article/${this.activePost.seq}` });
     },
   },
 };
