@@ -42,13 +42,13 @@ export default {
   },
   methods: {
     removeBookMark(bookmark) {
-      api.user.removeBookMark(bookmark.seq).then((res) => {
+      api.bookMark.removeBookMark(bookmark.seq).then((res) => {
         console.log(res);
         bookmark.bookmarked = false;
       });
     },
     addBookMark(bookmark) {
-      api.user.bookMark(bookmark.seq).then((res) => {
+      api.bookMark.bookMark(bookmark.seq).then((res) => {
         console.log(res);
         bookmark.bookmarked = true;
       });

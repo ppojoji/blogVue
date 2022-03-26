@@ -49,6 +49,8 @@ const user = {
   logout: () => {
     return axios.get("/logout");
   },
+};
+const bookMark = {
   bookMark: (postSeq) => {
     // who:34
     // what: 938
@@ -61,8 +63,6 @@ const user = {
     // bmk <> un bookmark
     return axios.delete(`/user/bookmark/${postSeq}`);
   },
-};
-const bookMark = {
   loadBookMark: () => {
     return axios.get("/api/bookmarks");
   },

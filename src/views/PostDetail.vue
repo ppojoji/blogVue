@@ -220,7 +220,7 @@ export default {
     bookMark(post) {
       // 나중에 코드를 정리해야함
       if (this.bookMarked) {
-        api.user
+        api.bookMark
           .removeBookMark(post.seq)
           .then((res) => {
             console.log(res);
@@ -232,7 +232,7 @@ export default {
             toast.error(msg.NOT_LOGIN, 3000);
           });
       } else {
-        api.user
+        api.bookMark
           .bookMark(post.seq)
           .then((res) => {
             console.log(res);
