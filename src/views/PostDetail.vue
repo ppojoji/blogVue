@@ -76,7 +76,10 @@ import toast from "../components/ui/toast";
 // import { mapState } from "vuex";
 
 const msg = {
-  NOT_OWNER_OF_POST: "글의 소유자가 아닙니다",
+  NOT_OWNER_OF_POST: "글의 소유자가 아닙니다.",
+  NOT_LOGIN: "로그인 해주세요.",
+  BOOKMARK_REMOVE: "북마크 해제 되었습니다.",
+  BOOKMARK_INSERT: "북마크 등록 되었습니다.",
 };
 const showToast = (cause) => {
   let message = msg[cause];
@@ -221,12 +224,12 @@ export default {
           .removeBookMark(post.seq)
           .then((res) => {
             console.log(res);
-            toast.success("북마크 해제 되었습니다.", 3000);
+            toast.success(msg.BOOKMARK_REMOVE, 3000);
             this.bookMarked = false;
           })
           .catch((err) => {
             console.log(err);
-            toast.error("로그인 해주세요", 3000);
+            toast.error(msg.NOT_LOGIN, 3000);
           });
       } else {
         api.user
@@ -234,12 +237,11 @@ export default {
           .then((res) => {
             console.log(res);
             this.bookMarked = true;
-            toast.success("북마크 등록 되었습니다.", 3000);
+            toast.success(msg.BOOKMARK_INSERT, 3000);
           })
           .catch((err) => {
             console.log(err);
-
-            toast.error("로그인 해주세요", 3000);
+            toast.error(msg.NOT_LOGIN, 3000);
           });
       }
     },
