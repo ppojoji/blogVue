@@ -3,13 +3,13 @@
     <!-- <h3>사용자 상세 화면입니다.</h3> -->
     <div class="menu">
       <div class="menu-item">
-        <a href="#" @click="changeMenu('cate')">카테고리</a>
+        <a href="#" @click="changeMenu('cate')">카테고리 관리</a>
       </div>
       <div class="menu-item">
-        <a href="#" @click="changeMenu('post')">관리자 글관리</a>
+        <a href="#" @click="changeMenu('post')">내글 관리</a>
       </div>
       <div class="menu-item">
-        <a href="#" @click="changeMenu('bookmark')">북마크</a>
+        <a href="#" @click="changeMenu('bookmark')">북마크 관리</a>
       </div>
     </div>
     <div class="main-area">
