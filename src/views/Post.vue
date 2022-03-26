@@ -26,6 +26,7 @@
     <table class="table">
       <thead>
         <tr>
+          <td></td>
           <td>제목</td>
           <td>카테코리</td>
           <td>조회수</td>
@@ -36,7 +37,7 @@
       </thead>
       <tbody class="blog-list-body">
         <tr v-if="lists.length === 0">
-          <td colspan="6" style="text-align: center">
+          <td colspan="7" style="text-align: center">
             <div class="logo">
               <span class="icon material-icons-outlined"> report_problem </span>
             </div>
@@ -49,6 +50,12 @@
           :key="post.seq"
           @click="viewPost(post.seq)"
         >
+          <td>
+            <span v-if="post.bookmarked" class="material-icons-outlined"
+              >star</span
+            >
+          </td>
+
           <td>
             <img
               class="iconNew"

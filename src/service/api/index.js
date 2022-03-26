@@ -62,6 +62,11 @@ const user = {
     return axios.delete(`/user/bookmark/${postSeq}`);
   },
 };
+const bookMark = {
+  loadBookMark: () => {
+    return axios.get("/api/bookmarks");
+  },
+};
 /**
  * 게시물 관련 api
  */
@@ -188,4 +193,5 @@ export default {
   post,
   admin,
   tag,
+  bookMark,
 };

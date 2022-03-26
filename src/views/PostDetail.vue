@@ -217,15 +217,30 @@ export default {
     bookMark(post) {
       // 나중에 코드를 정리해야함
       if (this.bookMarked) {
-        api.user.removeBookMark(post.seq).then((res) => {
-          console.log(res);
-        });
-        this.bookMarked = false;
+        api.user
+          .removeBookMark(post.seq)
+          .then((res) => {
+            console.log(res);
+            toast.success("북마크 해제 되었습니다.", 3000);
+            this.bookMarked = false;
+          })
+          .catch((err) => {
+            console.log(err);
+            toast.error("로그인 해주세요", 3000);
+          });
       } else {
-        api.user.bookMark(post.seq).then((res) => {
-          console.log(res);
-        });
-        this.bookMarked = true;
+        api.user
+          .bookMark(post.seq)
+          .then((res) => {
+            console.log(res);
+            this.bookMarked = true;
+            toast.success("북마크 등록 되었습니다.", 3000);
+          })
+          .catch((err) => {
+            console.log(err);
+
+            toast.error("로그인 해주세요", 3000);
+          });
       }
     },
   },
