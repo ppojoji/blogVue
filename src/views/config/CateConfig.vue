@@ -201,6 +201,10 @@ export default {
         });
     },
     deleteCate(cate) {
+      if (cate.post_cnt > 0) {
+        toast.warning("글이 있습니다.", 3000);
+        return;
+      }
       // TODO 토스트 메세지로 결과 알려주기
       api.cate
         .deleteCate(cate.seq)
@@ -209,6 +213,7 @@ export default {
           this.cates.splice(idx, 1);
           this.activeCate = null;
           console.log("삭제", res);
+
           const text = "삭제에 성공 했습니다.";
           toast.success(text, 5000);
           // setTimeout(() => {

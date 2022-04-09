@@ -1,14 +1,17 @@
 <template>
   <div>
     <h3>북마크 편집 화면</h3>
-
+    <PopupSlot v-if="popupVisible" @closePopup="popupClose()">
+      <PostDetail :postSeq="postSeq" :hideControl="true" />
+    </PopupSlot>
     <table class="table">
       <tr>
         <th>제목</th>
         <th>삭제</th>
+        <th>수정일</th>
       </tr>
       <tr v-for="bookmark in bookmarks" :key="bookmark.seq">
-        <td>
+        <td @click="MyPost(bookmark.seq)">
           {{ bookmark.title }}
         </td>
         <td v-if="bookmark.bookmarked">
@@ -21,6 +24,7 @@
             등록
           </button>
         </td>
+        <td>{{ Diff(bookmark.lastDate, currentTime) }}</td>
       </tr>
     </table>
   </div>
@@ -28,10 +32,18 @@
 
 <script>
 import api from "../../service/api";
+import util from "../../service/util";
+import PopupSlot from "../../components/ui/PopupSlot.vue";
+import PostDetail from "../PostDetail.vue";
+
 export default {
+  components: { PopupSlot, PostDetail },
   data() {
     return {
       bookmarks: null,
+      currentTime: new Date().getTime(),
+      popupVisible: false,
+      postSeq: null,
     };
   },
   mounted() {
@@ -52,6 +64,16 @@ export default {
         console.log(res);
         bookmark.bookmarked = true;
       });
+    },
+    Diff(time, current) {
+      return util.timeDiff(time, current);
+    },
+    MyPost(postSeq) {
+      this.postSeq = postSeq;
+      this.popupVisible = true;
+    },
+    popupClose() {
+      this.popupVisible = false;
     },
   },
 };

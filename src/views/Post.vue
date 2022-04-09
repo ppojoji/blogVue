@@ -122,9 +122,6 @@ import api from "../service/api";
 import util from "../service/util";
 import TagView from "../../src/views/TagView.vue";
 
-function timeDiff(millis, curMillis) {
-  return util.timeDiff(millis, curMillis);
-}
 export default {
   components: { TagView },
   props: ["lists"],
@@ -159,7 +156,7 @@ export default {
     //   // console.log("[PAUSED]");
     // },
     diff(time, current) {
-      return timeDiff(time, current);
+      return util.timeDiff(time, current);
     },
     isRecentPost(post) {
       return new Date().getTime() - post.creationDate < this.limit;

@@ -18,10 +18,6 @@ export default {
     closePopup() {
       this.$emit("closePopup");
     },
-    addCate() {
-      this.$emit("addCate", this.cateName);
-      this.closePopup();
-    },
   },
 };
 </script>

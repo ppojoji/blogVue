@@ -46,7 +46,7 @@
         emptyMessage="첨부파일이 없습니다."
       />
 
-      <div class="control">
+      <div class="control" v-if="!hideControl">
         <button @click="buttonMain">목록</button>
         <!-- <template v-if="me && me.seq === post.writer.seq">
         <button>수정</button>
@@ -90,6 +90,7 @@ const showToast = (cause) => {
 };
 
 export default {
+  props: ["postSeq", "hideControl"],
   components: {
     Loading,
     EditForm,
@@ -122,7 +123,14 @@ export default {
       return this.me && this.me.seq === this.post.writer.seq;
     },
     loadPost() {
-      api.post.detail(this.$route.params.post).then((res) => {
+      let pSeq;
+      if (!this.postSeq) {
+        pSeq = this.$route.params.post;
+      } else {
+        pSeq = this.postSeq;
+      }
+
+      api.post.detail(pSeq).then((res) => {
         console.log(res);
         this.post = res.data.post;
         this.upfiles = res.data.post.upFiles;
