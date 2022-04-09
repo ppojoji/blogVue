@@ -19,7 +19,11 @@ api.user.myInfo().then((res) => {
     store.commit("setUser", res.data.user);
     // store.actions.tryLogin(res.data.user)
     // store.state.loginUser = res.data.user;
+    console.log("[ready]", store.state.user.appReady);
+  } else {
+    // 로그인 정보가 없음
   }
+  store.state.user.appReady = true;
 });
 
 export default store;

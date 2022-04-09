@@ -1,5 +1,6 @@
 // import api from "../../service/api";
 const state = {
+  appReady: false,
   loginUser: null,
   name: "good",
 };

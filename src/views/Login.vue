@@ -8,17 +8,35 @@
 <script>
 import LoginForm from "@/components/LoginForm.vue";
 export default {
-  data() {
-    return {
-      user: null,
-    };
-  },
   methods: {
     login(user) {
-      console.log("[로그인] ", user);
-      this.user = user;
+      // this.user = user;
       // 이렇게 곧바로 assign 하면 디버그하기 힘든 단점이 있습니다.
       this.$store.state.user.loginUser = user;
+      //
+      console.log("[로그인] ", user, this.$route);
+      const nextUrl = this.$route.query.redirect || "/";
+      this.$router.push({ path: nextUrl });
+
+      /*
+      if (this.$route.query.redirect) {
+        this.$router.push({ path: this.$route.query.redirect });
+      } else {
+        this.$router.push({ path: "/" });
+      }
+      */
+    },
+  },
+  computed: {
+    user() {
+      return this.$store.state.user.loginUser;
+    },
+  },
+  watch: {
+    user(cur, prev) {
+      console.log("[바꼈다]", cur, prev);
+      const nextUrl = this.$route.query.redirect || "/";
+      this.$router.push({ path: nextUrl });
     },
   },
   components: {

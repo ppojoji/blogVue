@@ -8,15 +8,19 @@
     </div> -->
     <router-view />
     <Toast />
+    <Splash v-if="!$store.state.user.appReady" />
   </div>
 </template>
 <script>
 import Nav from "./views/Nav.vue";
 import Toast from "./components/ui/toast/ToastUI.vue";
+import Splash from "./components/Splash.vue";
+
 export default {
   components: {
     Nav,
     Toast,
+    Splash,
   },
 };
 </script>
