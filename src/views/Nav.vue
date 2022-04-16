@@ -3,6 +3,7 @@
     <h3>개인 블로그</h3>
     <div class="menu">
       <router-link class="menu-item" to="/">HOME</router-link>
+      <router-link class="menu-item" to="/join">JOIN</router-link>
       <!-- <router-link class="menu-item" to="/logout" v-if="$store.state.loginUser"
         >LOGOUT</router-link
       > -->
@@ -47,6 +48,9 @@ export default {
       // console.log(this.$store);
       api.user.logout();
       this.$store.state.user.loginUser = null;
+      this.$router.push({
+        path: "/",
+      });
     },
   },
 };

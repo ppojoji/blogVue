@@ -16,7 +16,7 @@ export default {
       //
       console.log("[로그인] ", user, this.$route);
       const nextUrl = this.$route.query.redirect || "/";
-      this.$router.push({ path: nextUrl });
+      this.$router.replace({ path: nextUrl });
 
       /*
       if (this.$route.query.redirect) {

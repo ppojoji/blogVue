@@ -8,6 +8,7 @@ import PostDetail from "../views/PostDetail.vue";
 import Overview from "../views/Overview.vue";
 import PostWrite from "../views/PostWrite.vue";
 import AdminPage from "../views/admin/AdminPage.vue";
+import MemberJoin from "../views/MemberJoin.vue";
 import Tag from "../views/Tag.vue";
 import store from "../store";
 
@@ -80,6 +81,11 @@ const routes = [
       adminOnly: true,
     },
   },
+  {
+    path: "/join",
+    name: "MemberJoin",
+    component: MemberJoin,
+  },
 ];
 
 const router = new VueRouter({
@@ -99,9 +105,9 @@ router.beforeEach((to, from, next) => {
   } else {
     // 로그인은 된 상태
     // 관리자인지??
-    // if (to.meta.adminOnly && store.state.user.loginUser.admin === "N") {
-    // router.push({ path: "/login", query: { redirect: to.fullPath } });
-    // }
+    //if (to.meta.adminOnly && store.state.user.loginUser.admin === "Y") {
+    //  router.push({ path: "/", query: { redirect: to.fullPath } });
+    //}
   }
   next();
   /*

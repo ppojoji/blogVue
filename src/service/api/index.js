@@ -49,6 +49,18 @@ const user = {
   logout: () => {
     return axios.get("/logout");
   },
+  join: (singUp) => {
+    const form = new FormData();
+    form.append("id", singUp.id);
+    form.append("email", singUp.email);
+    form.append("pwd", singUp.pwd);
+    form.append("pwhint", singUp.pwhint);
+    form.append("pwhintans", singUp.pwhintans);
+    return axios.post("/user/join", form);
+  },
+  checkProp: (prop, value) => {
+    return axios.get("/user/join/checked", { params: { prop, value } });
+  },
 };
 const bookMark = {
   bookMark: (postSeq) => {

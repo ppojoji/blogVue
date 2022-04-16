@@ -1,6 +1,6 @@
 <template>
   <div class="admin-wrapper">
-    <template v-if="user.admin === 'Y'">
+    <template v-if="user && user.admin === 'Y'">
       <div class="menu">
         <div class="menu-item">
           <a href="#" @click="changeMenu('cate')">카테고리 관리</a>
