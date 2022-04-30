@@ -61,6 +61,13 @@ const user = {
   checkProp: (prop, value) => {
     return axios.get("/user/join/checked", { params: { prop, value } });
   },
+  hint: (hint) => {
+    const form = new FormData();
+    form.append("email", hint.email);
+    form.append("hint", hint.pwhint);
+    form.append("hintAns", hint.pwAns);
+    return axios.post(`/api/user/hint`, form);
+  },
 };
 const bookMark = {
   bookMark: (postSeq) => {

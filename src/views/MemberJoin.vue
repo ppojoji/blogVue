@@ -91,6 +91,7 @@
 </template>
 
 <script>
+import toast from "../components/ui/toast";
 import api from "../service/api";
 export default {
   data() {
@@ -168,6 +169,14 @@ export default {
     },
     join() {
       this.signup.email = this.email;
+      if (!this.signup.pwhint) {
+        toast.error("힌트를 선택해 주세요", 3000);
+        return;
+      }
+      if (!this.signup.pwhintans) {
+        toast.error("답변을 입력해 주세요", 3000);
+        return;
+      }
       api.user.join(this.signup).then((res) => {
         console.log("[회원가입]", res);
       });

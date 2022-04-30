@@ -41,8 +41,23 @@
           <button type="button" class="btn btn-primary" @click="login">
             로그인
           </button>
-          <a href="#" class="btn btn-primary btn-find-pass">비번 찾기</a>
+          <a href="#" class="btn btn-primary btn-find-pass" @click="ShowOpenPwd"
+            >비번 찾기</a
+          >
         </form>
+        <PopupSlot v-if="PwdPopVisable" @closePopup="closePopup()">
+          <div class="error" v-if="hintErr">{{ hintErr }}</div>
+
+          <div class="hint-data" v-if="hintData">
+            <ul>
+              <li>id : {{ hintData.id }}</li>
+              <li>password: {{ hintData.pwd }}</li>
+            </ul>
+          </div>
+          <Find @hint="hint" v-else></Find>
+
+          <button @click="closePopup()">닫기</button>
+        </PopupSlot>
       </div>
       <!-- <div class="col-8">75%</div>
 			<div class="col-3">25%</div>
@@ -54,13 +69,20 @@
 <script>
 import axios from "axios";
 import toast from "./ui/toast";
+import PopupSlot from "../components/ui/PopupSlot.vue";
+import Find from "../components/ui/Find.vue";
+import api from "../service/api";
 
 export default {
+  components: { PopupSlot, Find },
   data() {
     return {
       error: false,
       id: "",
       pwd: "",
+      PwdPopVisable: false,
+      hintErr: null,
+      hintData: null,
     };
   },
   methods: {
@@ -99,8 +121,32 @@ export default {
           console.log(error);
         });
     },
+    ShowOpenPwd() {
+      this.PwdPopVisable = true;
+    },
+    closePopup() {
+      this.PwdPopVisable = null;
+    },
+    hint(evt) {
+      console.log("[HINT]", evt);
+      api.user
+        .hint(evt)
+        .then((res) => {
+          console.log(res);
+          this.hintData = { id: res.data.id, pwd: res.data.pwd };
+        })
+        .catch((e) => {
+          console.log(e);
+          this.hintErr = e.response.data.cause;
+        });
+    },
   },
 };
 </script>
 
-<style></style>
+<style lang="scss" scoped>
+.error {
+  color: red;
+  margin-bottom: 8px;
+}
+</style>
