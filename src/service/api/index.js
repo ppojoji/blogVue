@@ -158,6 +158,23 @@ const post = {
   findByTag: (tagSeq) => {
     return axios.get(`/api/post/tag/${tagSeq}`);
   },
+  replyInsert: (postSeq, contents) => {
+    // 하나 빠진 값이 있음.
+    const form = new FormData();
+    form.append("parent", postSeq);
+    form.append("contents", contents);
+    return axios.post("/article/replyPost", form, {
+      headers: {
+        "Content-Type": "multipart/formdata",
+      },
+    });
+  },
+  selectReply: (postSeq) => {
+    return axios.get(`/article/replies/${postSeq}`);
+  },
+  removeReply: (replySeq) => {
+    return axios.delete(`/article/reply/${replySeq}`);
+  },
   /**
    * 주어진 태그를 조회함
    * @param {태그명} tagName

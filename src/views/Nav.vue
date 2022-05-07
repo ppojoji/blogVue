@@ -3,7 +3,12 @@
     <h3>개인 블로그</h3>
     <div class="menu">
       <router-link class="menu-item" to="/">HOME</router-link>
-      <router-link class="menu-item" to="/join">JOIN</router-link>
+      <router-link
+        class="menu-item"
+        to="/join"
+        v-if="!$store.state.user.loginUser"
+        >JOIN</router-link
+      >
       <!-- <router-link class="menu-item" to="/logout" v-if="$store.state.loginUser"
         >LOGOUT</router-link
       > -->
@@ -11,7 +16,7 @@
         href="#"
         class="menu-item"
         v-if="$store.state.user.loginUser"
-        @click="logout"
+        @click.prevent="logout"
         >LOGOUT</a
       >
       <router-link class="menu-item" to="/login" v-else>LOGIN</router-link>
@@ -65,5 +70,8 @@ export default {
   /* height: 200px; */
   background-color: #cddc39;
   box-shadow: 1px 1px 8px #ccc;
+}
+.menu-item {
+  margin: 5px;
 }
 </style>

@@ -45,7 +45,7 @@
         v-bind:editMode="false"
         emptyMessage="첨부파일이 없습니다."
       />
-
+      <ReplyView :post="post" />
       <div class="control" v-if="!hideControl">
         <button @click="buttonMain">목록</button>
         <!-- <template v-if="me && me.seq === post.writer.seq">
@@ -73,6 +73,7 @@ import UpfileList from "../components/UpfileList.vue";
 import TagView from "../views/TagView.vue";
 import PostOfTag from "../components/PostOfTag.vue";
 import toast from "../components/ui/toast";
+import ReplyView from "../components/ReplyView.vue";
 // import { mapState } from "vuex";
 
 const msg = {
@@ -97,6 +98,7 @@ export default {
     UpfileList,
     TagView,
     PostOfTag,
+    ReplyView,
   },
   data() {
     return {

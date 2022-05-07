@@ -4,7 +4,7 @@
     <div class="cate-list container-fluid">
       <div class="row">
         <div
-          class="col-12 col-sm-6 col-md-4 col-lg-3"
+          class="col-box col-12 col-sm-6 col-md-4 col-lg-3"
           v-for="overview in overviews"
           :key="overview.cate.seq"
         >
@@ -82,10 +82,13 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-.cate-box {
-  border: 1px solid #cccccc;
-  /* margin: 4px; */
-  border-radius: 5px;
-  padding: 8px;
+.col-box {
+  margin-bottom: 15px;
+  .cate-box {
+    border: 1px solid #cccccc;
+    height: 100%;
+    border-radius: 5px;
+    padding: 8px;
+  }
 }
 </style>
