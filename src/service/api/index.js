@@ -185,6 +185,18 @@ const post = {
   },
 };
 
+const reply = {
+  /**
+   * 답글 신고하기
+   * @param {int} replySeq
+   * @param {string} banCode
+   * @returns
+   */
+  ban: (replySeq, banCode) => {
+    return axios.post(`/article/reply/${replySeq}/ban/${banCode}`);
+  },
+};
+
 const tag = {
   posts: () => {
     return axios.get(`/api/postBytag`);
@@ -221,12 +233,18 @@ const admin = {
   },
   cate: {},
   user: {},
+  ban: {
+    loadBanList: () => {
+      return axios.get(`/admin/api/banList`);
+    },
+  },
 };
 export { admin, cate, user, post };
 export default {
   cate,
   user,
   post,
+  reply,
   admin,
   tag,
   bookMark,

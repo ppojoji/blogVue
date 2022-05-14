@@ -2,11 +2,12 @@
   <div>
     <h3>차단 사유</h3>
     <Ban :banList="banHistory" :post="post"> </Ban>
-    <ul class="policy">
+    <!-- <ul class="policy">
       <li v-for="pol in policy" :key="pol.code" @click="SetPolicy(pol)">
         {{ pol.text }}
       </li>
-    </ul>
+    </ul> -->
+    <BanCode @bancode="(pol) => SetPolicy(pol)" />
   </div>
 </template>
 
@@ -20,20 +21,13 @@ ET: 기타
 */
 import api from "../../service/api";
 import Ban from "../admin/Ban.vue";
+import BanCode from "../../components/BanCode.vue";
 export default {
-  components: { Ban },
+  components: { Ban, BanCode },
   props: ["post"],
   data() {
     return {
       banHistory: [],
-      policy: [
-        { code: "AD", text: "광고성 글" },
-        { code: "PN", text: "음란매체" },
-        { code: "AB", text: "명예훼손,비방" },
-        { code: "GM", text: "도박" },
-        { code: "ET", text: "기타" },
-        { code: null, text: "해제됨" },
-      ],
     };
   },
   mounted() {
@@ -54,16 +48,10 @@ export default {
         this.post.recentBan.banTime = res.data.banTime;
       });
     },
-    banText(code) {
-      // code = null
-      const elem = this.policy.find((elem) => elem.code === code);
-      // if (elem) {
-      //   return elem.text;
-      // } else {
-      //   return "해제";
-      // }
-      return elem.text;
-    },
+    // banText(code) {
+    //   const elem = this.policy.find((elem) => elem.code === code);
+    //   return elem.text;
+    // },
   },
 };
 </script>

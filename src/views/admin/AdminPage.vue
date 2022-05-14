@@ -8,10 +8,14 @@
         <div class="menu-item">
           <a href="#" @click="changeMenu('post')">글 관리</a>
         </div>
+        <div class="menu-item">
+          <a href="#" @click="changeMenu('ban')">신고내역</a>
+        </div>
       </div>
       <div class="viewer">
         <CateConfig v-if="menuType === 'cate'" />
         <PostPage v-else-if="menuType === 'post'" />
+        <BanReporter v-else-if="menuType === 'ban'" />
       </div>
     </template>
     <div v-else class="alert">관리자가 아닙니다.</div>
@@ -22,9 +26,9 @@
 <script>
 import PostPage from "./PostPage.vue";
 import CateConfig from "../config/CateConfig.vue";
-// import LoginForm from "../../components/LoginForm.vue";
+import BanReporter from "../config/BanReport.vue";
 export default {
-  components: { CateConfig, PostPage },
+  components: { CateConfig, PostPage, BanReporter },
   data() {
     return {
       menuType: "cate",
