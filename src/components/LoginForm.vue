@@ -30,6 +30,7 @@
               class="form-control"
               id="pwd"
               v-model="pwd"
+              v-on:keyup.enter="login"
               @input="error = false"
             />
           </div>
