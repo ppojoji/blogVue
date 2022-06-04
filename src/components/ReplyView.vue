@@ -1,7 +1,12 @@
 <template>
   <div class="reply-view">
     <div class="input-area">
-      <textarea class="form-control" v-model="contents"></textarea>
+      <!-- v-on:keydown.enter.shift.exact="() => {}" -->
+      <textarea
+        class="form-control"
+        v-model="contents"
+        v-on:keydown.enter="reply($event)"
+      ></textarea>
       <button class="btn-submit btn btn-primary" @click="reply">답글</button>
     </div>
     <!-- :class="{mine: user && user.id === reply.writer.id }"-->
@@ -12,7 +17,10 @@
         v-for="reply in replyList"
         :key="reply.seq"
       >
-        {{ reply.content }}({{ reply.writer.id }})
+        <p v-for="(line, idx) in splitContent(reply.content)" :key="idx">
+          {{ line }}
+        </p>
+        ({{ reply.writer.id }})
         <button
           class="btn btn-sm btn-primary"
           v-if="isMyReply(reply)"
@@ -53,14 +61,28 @@ export default {
     console.log(this.user);
   },
   methods: {
-    reply() {
-      api.post.replyInsert(this.post.seq, this.contents).then((res) => {
-        console.log(res);
-        this.replyList.unshift(res.data.reply);
-      });
+    reply(e) {
+      console.log(e.target.value);
+      if (!e.shiftKey) {
+        e.preventDefault();
+        api.reply
+          .replyInsert(this.post.seq, this.contents)
+          .then((res) => {
+            console.log(res);
+            this.replyList.unshift(res.data.reply);
+            this.contents = "";
+          })
+          .catch((err) => {
+            console.log(err);
+            toast.error("로그인 후에 답글 작성 가능합니다.", 5000);
+          });
+      }
+    },
+    splitContent(content) {
+      return content.split("\r\n");
     },
     selectReply() {
-      api.post.selectReply(this.post.seq).then((res) => {
+      api.reply.selectReply(this.post.seq).then((res) => {
         console.log(res);
         this.replyList = res.data;
       });
@@ -69,7 +91,7 @@ export default {
       return this.user && this.user.id === reply.writer.id;
     },
     removeReply(reply) {
-      api.post
+      api.reply
         .removeReply(reply.seq)
         .then((res) => {
           console.log(res);
@@ -118,6 +140,9 @@ export default {
       &.mine {
         background-color: #ecff6587;
       }
+    }
+    p {
+      margin: 0;
     }
   }
   .input-area {

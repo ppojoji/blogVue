@@ -158,6 +158,29 @@ const post = {
   findByTag: (tagSeq) => {
     return axios.get(`/api/post/tag/${tagSeq}`);
   },
+  /**
+   * 주어진 태그를 조회함
+   * @param {태그명} tagName
+   * @returns
+   */
+  tagInsert: (tagName) => {
+    return axios.get(`/api/tagSelect/${tagName}`);
+  },
+  userPostBan: (postSeq, banCode) => {
+    return axios.post(`/api/post/${postSeq}/ban/${banCode}`);
+  },
+};
+
+const reply = {
+  /**
+   * 답글 신고하기
+   * @param {int} replySeq
+   * @param {string} banCode
+   * @returns
+   */
+  ban: (replySeq, banCode) => {
+    return axios.post(`/article/reply/${replySeq}/ban/${banCode}`);
+  },
   replyInsert: (postSeq, contents) => {
     // 하나 빠진 값이 있음.
     const form = new FormData();
@@ -174,26 +197,6 @@ const post = {
   },
   removeReply: (replySeq) => {
     return axios.delete(`/article/reply/${replySeq}`);
-  },
-  /**
-   * 주어진 태그를 조회함
-   * @param {태그명} tagName
-   * @returns
-   */
-  tagInsert: (tagName) => {
-    return axios.get(`/api/tagSelect/${tagName}`);
-  },
-};
-
-const reply = {
-  /**
-   * 답글 신고하기
-   * @param {int} replySeq
-   * @param {string} banCode
-   * @returns
-   */
-  ban: (replySeq, banCode) => {
-    return axios.post(`/article/reply/${replySeq}/ban/${banCode}`);
   },
 };
 
@@ -234,8 +237,26 @@ const admin = {
   cate: {},
   user: {},
   ban: {
-    loadBanList: () => {
-      return axios.get(`/admin/api/banList`);
+    loadBanPostList: () => {
+      return axios.get(`/admin/api/ban/post`);
+    },
+    loadBanReplyList: () => {
+      return axios.get(`/admin/api/ban/reply`);
+    },
+    loadBanList: (type) => {
+      return axios.get(`/admin/api/ban/${type}`);
+    },
+    insertApprove: (banSeq) => {
+      return axios.post(`admin/api/ban/${banSeq}/approve`);
+    },
+    insertReject: (banSeq) => {
+      return axios.post(`admin/api/ban/${banSeq}/reject`);
+    },
+    loadBadUsers: () => {
+      return axios.get(`admin/api/ban/badUser`);
+    },
+    loadDetail: (banUserSeq) => {
+      return axios.get(`admin/api/ban/detail/${banUserSeq}`);
     },
   },
 };

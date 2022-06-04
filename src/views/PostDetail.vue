@@ -17,6 +17,11 @@
         >
           star_outline
         </span>
+        <img
+          class="singo"
+          src="../assets/singo.jpeg"
+          @click="showBanPopup(post)"
+        />
       </div>
       <div class="writer">
         <span>{{ post.writer.id }}</span
@@ -33,6 +38,9 @@
         @activePost="postClicked"
         :currentPost="post"
       />
+      <PopupSlot v-if="popupVisible" @closePopup="popupClose()">
+        <BanCode @bancode="policyClick" />
+      </PopupSlot>
       <UpfileList
         :files="upfiles"
         keyProp="seq"
@@ -74,6 +82,8 @@ import TagView from "../views/TagView.vue";
 import PostOfTag from "../components/PostOfTag.vue";
 import toast from "../components/ui/toast";
 import ReplyView from "../components/ReplyView.vue";
+import PopupSlot from "../components/ui/PopupSlot.vue";
+import BanCode from "../components/BanCode.vue";
 // import { mapState } from "vuex";
 
 const msg = {
@@ -99,6 +109,8 @@ export default {
     TagView,
     PostOfTag,
     ReplyView,
+    PopupSlot,
+    BanCode,
   },
   data() {
     return {
@@ -109,6 +121,8 @@ export default {
       //tagPosts: null,
       activeTag: null,
       bookMarked: false,
+      popupVisible: false,
+
       // tags: [],
     };
   },
@@ -172,6 +186,9 @@ export default {
     },
     back() {
       this.readMode = true;
+    },
+    popupClose() {
+      this.popupVisible = false;
     },
     updated(post) {
       this.readMode = true;
@@ -255,6 +272,18 @@ export default {
           });
       }
     },
+    showBanPopup(post) {
+      this.currentPost = post;
+      this.popupVisible = true;
+    },
+    policyClick(ban) {
+      console.log("클릭됨", ban.code);
+      console.log("클릭됨", this.post.seq);
+      api.post.userPostBan(this.post.seq, ban.code).then((res) => {
+        console.log(res);
+        //toast.success("신고 완료", 3000);
+      });
+    },
   },
   watch: {
     "$route.params.post"(cur, prev) {
@@ -278,6 +307,10 @@ export default {
   .btn-bookmark {
     cursor: pointer;
     user-select: none;
+  }
+  .singo {
+    width: 22px;
+    height: auto;
   }
 }
 </style>
