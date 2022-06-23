@@ -1,13 +1,5 @@
 <template>
   <div class="photo">
-    <!-- <div v-if="post.upFiles.length > 0">
-      <img
-        :src="`http://localhost:8888/blog/upfile/${post.upFiles[0].genName}`"
-      />
-    </div>
-    <div v-else>
-      <img src="../assets/empty.jpg" />
-    </div> -->
     <div>
       <img :src="getImage()" />
     </div>
@@ -33,11 +25,10 @@ export default {
       this.$router.push({
         path: "/article/" + postSeq,
       });
-      // http://localhost:8080/article/46432
     },
     getImage() {
       if (this.post.upFiles.length > 0) {
-        return `http://localhost:8888/blog/upfile/${this.post.upFiles[0].genName}`;
+        return `${process.env.VUE_APP_BACKEND_HOST}/upfile/${this.post.upFiles[0].genName}`;
       } else {
         // IMPORTANT - JS에서 ASSET 경로 접근할때
         return require(`../assets/empty.jpg`);

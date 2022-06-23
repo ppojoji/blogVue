@@ -96,7 +96,7 @@ export default {
       params.append("pwd", pwd);
       params.append("useCookie", "false");
       axios
-        .post("http://localhost:8888/blog/api/login", params, {
+        .post(process.env.VUE_APP_BACKEND_HOST + "/api/login", params, {
           withCredentials: true,
         })
         .then((res) => {

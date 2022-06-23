@@ -12,37 +12,34 @@
             <li>음란글</li>
           </ul>
         </div> -->
+
+        <BanList
+          :banList="detailBanUsers[badUser.seq]"
+          v-if="detailBanUsers[badUser.seq]"
+        >
+        </BanList>
         <div class="ctrl">
-          <button>7일</button>
-          <button>28일</button>
-          <button>90일</button>
+          <button @click="banDuration(badUser.seq, 7)">7일</button>
+          <button @click="banDuration(badUser.seq, 28)">28일</button>
+          <button @click="banDuration(badUser.seq, 90)">90일</button>
         </div>
       </div>
-      <!-- <div class="ban-user">
-        <h5>aaaa@naver.com</h5>
-        <div class="ban-histo">
-          <ul>
-            <li>광고 도배</li>
-            <li>음란글</li>
-            <li>음란글</li>
-          </ul>
-        </div>
-        <div class="ctrl">
-          <button>7일</button>
-          <button>28일</button>
-          <button>90일</button>
-        </div>
-      </div> -->
     </div>
   </div>
 </template>
 
 <script>
 import api from "../../service/api";
+import BanList from "../admin/BanList.vue";
 export default {
+  components: { BanList },
   data() {
     return {
       badUsers: [],
+      banList: null,
+      // visibleBanUsers: {}, // { 5: [..], 3: [...], 1: [...]}
+      detailBanUsers: {},
+      visibleBanUsers: [],
     };
   },
   mounted() {
@@ -56,7 +53,34 @@ export default {
       });
     },
     loadDetail(banUserSeq) {
-      api.admin.ban.loadDetail(banUserSeq).then((res) => {
+      if (this.visibleBanUsers.includes(banUserSeq)) {
+        // this.$set(this.detailBanUsers, banUserSeq, null);
+        this.detailBanUsers[banUserSeq] = null;
+        const idx = this.visibleBanUsers.findIndex((b) => {
+          return b === banUserSeq;
+        });
+        this.visibleBanUsers.splice(idx, 1);
+      } else {
+        api.admin.ban.loadDetail(banUserSeq).then((res) => {
+          console.log(res); // res.data
+          /*
+           * https://v3.ko.vuejs.org/guide/change-detection.html
+           */
+          // this.detailBanUsers[1] = 333;
+          this.$set(this.detailBanUsers, banUserSeq, res.data);
+          this.visibleBanUsers.push(banUserSeq);
+          //this.visibleBanUsers = banUserSeq;
+          /*
+        this.$set(this.someObject, 'b', 2)
+        this.someObject.b = 2;
+        */
+        });
+      }
+    },
+    banDuration(userSeq, duration) {
+      // const banUserSeq = 3323;
+      console.log(duration);
+      api.admin.ban.banDuration(userSeq, duration).then((res) => {
         console.log(res);
       });
     },

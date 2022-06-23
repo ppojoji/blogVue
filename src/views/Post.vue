@@ -167,7 +167,6 @@ export default {
       this.$router.push({
         path: "/article/" + postSeq,
       });
-      // http://localhost:8080/article/46432
     },
     showSummary(post) {
       // this.$refs.summaryEl.style.display = "block";

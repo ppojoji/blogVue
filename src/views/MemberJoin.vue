@@ -1,12 +1,12 @@
 <template>
   <div class="join_content">
-    <h1>회원가입</h1>
     <div class="row_group">
+      <h1>회원가입</h1>
       <div class="join_row">
         <h3 class="join_title">아이디</h3>
         <span class="ps_box">
           <input
-            class="int"
+            class="int form-control"
             :class="{ error: error.id, success: success.id }"
             v-model="signup.id"
             type="text"
@@ -20,46 +20,60 @@
         <h3 class="join_title">비밀번호</h3>
         <span class="ps_box">
           <input
-            class="int"
+            class="int form-control"
             v-model="signup.pwd"
             type="password"
             maxlength="16"
             @blur="passwordValid"
           />
         </span>
-        <span class="error_next_box" v-if="!passwordValidFlag"
-          >유효하지 않은 비밀번호 입니다.</span
-        >
+        <div class="error-box" v-if="passwordError.cnt > 0">
+          <div v-if="!passwordError.num" class="error-msg">
+            숫자가 필요합니다.
+          </div>
+          <div v-if="!passwordError.char" class="error-msg">
+            영문자가 필요합니다.
+          </div>
+          <div v-if="!passwordError.size" class="error-msg">
+            6글자 이상 필요합니다.
+          </div>
+        </div>
+      </div>
+      <div class="join_row">
         <h3 class="join_title">비밀번호 재확인</h3>
         <span class="ps_box">
           <input
-            class="int"
+            class="int form-control"
             v-model="passwordCheck"
             type="password"
             maxlength="16"
             @blur="passwordCheckValid"
           />
         </span>
-        <span class="error_next_box" v-if="!passwordCheckFlag"
+        <span class="error_next_box form-control" v-if="!passwordCheckFlag"
           >비밀번호가 동일하지 않습니다.</span
         >
+      </div>
+      <div class="join_row">
         <h3 class="join_title">비밀번호 힌트</h3>
-        <select class="sel" v-model="signup.pwhint" size="1">
+        <select class="sel form-control" v-model="signup.pwhint" size="1">
           <option value="">선택하세요</option>
           <option v-for="pwhintList in pwhintLists" :key="pwhintList.value">
             {{ pwhintList.text }}
           </option>
         </select>
+      </div>
+      <div class="join_row">
         <h3 class="join_title">답변</h3>
         <span class="ps_box">
-          <input class="int" v-model="signup.pwhintans" />
+          <input class="int form-control" v-model="signup.pwhintans" />
         </span>
       </div>
       <div class="join_row">
         <h3 class="join_title">이메일</h3>
         <span class="ps_box">
           <input
-            class="int"
+            class="int form-control"
             :class="{ error: error.emailId, success: success.emailId }"
             v-model="signup.emailId"
             type="text"
@@ -73,19 +87,27 @@
           @change="propertyValid('domain')"
         >
           <option value="">직접입력</option>
-          <option value="daum.net">daum.net</option>
-          <option value="gmail.com">gmail.com</option>
-          <option value="msn.com">msn.com</option>
-          <option value="naver.com">naver.com</option>
-          <option value="nate.com">nate.com</option>
+          <option value="@daum.net">daum.net</option>
+          <option value="@gmail.com">gmail.com</option>
+          <option value="@msn.com">msn.com</option>
+          <option value="@naver.com">naver.com</option>
+          <option value="@nate.com">nate.com</option>
         </select>
         <span class="error_next_box" v-if="!idValid">필수 정보입니다.</span>
       </div>
-    </div>
 
-    <div class="btn_area">
-      <button class="btn btn-primary" @click="join">회원가입</button>
-      <button class="btn btn-danger">취소</button>
+      <div class="join_row">
+        <div class="btn_area">
+          <button
+            class="btn btn-primary"
+            @click="join"
+            :disabled="!passwordValidFlag || !passwordCheckFlag"
+          >
+            회원가입
+          </button>
+          <button class="btn btn-danger">취소</button>
+        </div>
+      </div>
     </div>
   </div>
 </template>
@@ -139,6 +161,12 @@ export default {
         },
       ],
       passwordValidFlag: true,
+      passwordError: {
+        cnt: 0,
+        size: true,
+        num: true,
+        char: true,
+      },
       passwordCheckFlag: true,
     };
   },
@@ -147,12 +175,15 @@ export default {
       return /^[a-z0-9]+$/.test(this.signup.id);
     },
     email() {
-      return this.signup.emailId + "@" + this.signup.domain;
+      return this.signup.emailId + this.signup.domain;
     },
   },
   methods: {
     // 비밀번호 유효성 체크
     passwordValid() {
+      // 영문자 있는지 정규표현식
+      // 숫자가 있는지 정규표현식
+      // 전체 길이 확인하는 코드
       if (/^(?=.*[a-z])(?=.*[0-9]).{6,12}$/.test(this.signup.pwd)) {
         this.passwordValidFlag = true;
       } else {
@@ -224,5 +255,37 @@ export default {
 }
 .success {
   background-color: rgba(208, 255, 173, 0.499);
+}
+.join_content {
+  .row_group {
+    padding: 16px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    .join_row {
+      width: 100%;
+      margin-bottom: 16px;
+      h3 {
+        font-family: "Nanum Gothic", sans-serif;
+        font-size: 1.25rem;
+        font-weight: 400;
+        margin-bottom: 4px;
+      }
+      .error-box {
+        background-color: #ffe5cf;
+        padding: 8px;
+        font-size: 0.8rem;
+        .error-msg {
+          color: red;
+        }
+      }
+    }
+  }
+  @media screen and (min-width: 580px) {
+    .row_group {
+      width: 480px;
+      margin: auto;
+    }
+  }
 }
 </style>

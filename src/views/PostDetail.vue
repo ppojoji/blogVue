@@ -48,7 +48,7 @@
         sizeProp="fileSize"
         :isImageFile="(file) => file.contentType.startsWith('image')"
         :getImagePath="
-          (file) => `http://localhost:8888/blog/upfile/${file.genName}`
+          (file) => `${process.env.VUE_APP_BACKEND_HOST}/upfile/${file.genName}`
         "
         v-bind:editMode="false"
         emptyMessage="첨부파일이 없습니다."

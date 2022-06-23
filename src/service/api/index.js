@@ -1,5 +1,5 @@
 import axios from "axios";
-axios.defaults.baseURL = "http://localhost:8888/blog";
+axios.defaults.baseURL = process.env.VUE_APP_BACKEND_HOST;
 axios.interceptors.request.use((config) => {
   config.withCredentials = true;
   return config;
@@ -246,17 +246,23 @@ const admin = {
     loadBanList: (type) => {
       return axios.get(`/admin/api/ban/${type}`);
     },
-    insertApprove: (banSeq) => {
-      return axios.post(`admin/api/ban/${banSeq}/approve`);
-    },
-    insertReject: (banSeq) => {
-      return axios.post(`admin/api/ban/${banSeq}/reject`);
+    // insertApprove: (banSeq) => {
+    //   return axios.post(`admin/api/ban/${banSeq}/approve`);
+    // },
+    // insertReject: (banSeq) => {
+    //   return axios.post(`admin/api/ban/${banSeq}/reject`);
+    // },
+    insertDecision: (banSeq, decision) => {
+      return axios.post(`admin/api/ban/${banSeq}/${decision}`);
     },
     loadBadUsers: () => {
       return axios.get(`admin/api/ban/badUser`);
     },
     loadDetail: (banUserSeq) => {
       return axios.get(`admin/api/ban/detail/${banUserSeq}`);
+    },
+    banDuration: (banUserSeq, duration) => {
+      return axios.post(`admin/api/ban/user/${banUserSeq}/days/${duration}`);
     },
   },
 };

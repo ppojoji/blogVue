@@ -8,8 +8,10 @@
     <BanList :banList="banList" @banclick="showBanControl"> </BanList>
     <PopupSlot v-if="popupVisible" @closePopup="closePopup()">
       <h3>{{ getContent(currentBan) }}</h3>
-      <button @click="approve()">승인</button>
-      <button @click="reject()">거절</button>
+      <!-- <button @click="approve()">승인</button>
+      <button @click="reject()">거절</button> -->
+      <button @click="insertDecision('approve')">승인</button>
+      <button @click="insertDecision('reject')">거절</button>
     </PopupSlot>
   </div>
 </template>
@@ -87,62 +89,89 @@ export default {
     closePopup() {
       this.popupVisible = false;
     },
-    approve() {
-      console.log("승인처리 여기서");
-      api.admin.ban.insertApprove(this.currentBan.seq).then((res) => {
-        console.log(res);
-        const idx = this.banList.findIndex(
-          (e) => this.currentBan.seq === e.seq
-        );
-        this.banList.splice(idx, 1);
-        /*
-         * [a, b, c, d, e]
-                  ^
-                  2
-           [a, b, d, e]
-         */
-        if (this.banList.length === 0) {
-          this.currentBan = null;
-          this.closePopup();
-        } else if (this.banList.length === idx) {
-          this.currentBan = this.banList[idx - 1];
-        } else {
-          this.currentBan = this.banList[idx];
-        }
 
-        // this.banList = res.data;
-        /*
-        if (this.currentBan.targettype == "R") {
-          this.banReplyRepoter();
-        } else {
-          this.banPostRepoter();
-        }
-        */
-      });
-    },
-    reject() {
-      console.log("거부 처리 여기서");
-      api.admin.ban.insertReject(this.currentBan.seq).then((res) => {
-        console.log(res);
-        const idx = this.banList.findIndex(
-          (e) => this.currentBan.seq === e.seq
-        );
-        this.banList.splice(idx, 1);
-        /*
-         * [a, b, c, d, e]
-                  ^
-                  2
-           [a, b, d, e]
-         */
-        if (this.banList.length === 0) {
-          this.currentBan = null;
-          this.closePopup();
-        } else if (this.banList.length === idx) {
-          this.currentBan = this.banList[idx - 1];
-        } else {
-          this.currentBan = this.banList[idx];
-        }
-      });
+    //approve() {
+    //   console.log("승인처리 여기서");
+    //   api.admin.ban.insertApprove(this.currentBan.seq).then((res) => {
+    //     console.log(res);
+    //     const idx = this.banList.findIndex(
+    //       (e) => this.currentBan.seq === e.seq
+    //     );
+    //     this.banList.splice(idx, 1);
+    //     /*
+    //      * [a, b, c, d, e]
+    //               ^
+    //               2
+    //        [a, b, d, e]
+    //      */
+    //     if (this.banList.length === 0) {
+    //       this.currentBan = null;
+    //       this.closePopup();
+    //     } else if (this.banList.length === idx) {
+    //       this.currentBan = this.banList[idx - 1];
+    //     } else {
+    //       this.currentBan = this.banList[idx];
+    //     }
+
+    //     // this.banList = res.data;
+    //     /*
+    //     if (this.currentBan.targettype == "R") {
+    //       this.banReplyRepoter();
+    //     } else {
+    //       this.banPostRepoter();
+    //     }
+    //     */
+    //   });
+    // },
+    // reject() {
+    //   console.log("거부 처리 여기서");
+    //   api.admin.ban.insertReject(this.currentBan.seq).then((res) => {
+    //     console.log(res);
+    //     const idx = this.banList.findIndex(
+    //       (e) => this.currentBan.seq === e.seq
+    //     );
+    //     this.banList.splice(idx, 1);
+    //     /*
+    //      * [a, b, c, d, e]
+    //               ^
+    //               2
+    //        [a, b, d, e]
+    //      */
+    //     if (this.banList.length === 0) {
+    //       this.currentBan = null;
+    //       this.closePopup();
+    //     } else if (this.banList.length === idx) {
+    //       this.currentBan = this.banList[idx - 1];
+    //     } else {
+    //       this.currentBan = this.banList[idx];
+    //     }
+    //   });
+    // },
+    insertDecision(decision) {
+      console.log("[## decision]", decision);
+      api.admin.ban
+        .insertDecision(this.currentBan.seq, decision)
+        .then((res) => {
+          console.log(res);
+          const idx = this.banList.findIndex(
+            (e) => this.currentBan.seq === e.seq
+          );
+          this.banList.splice(idx, 1);
+          /*
+          * [a, b, c, d, e]
+                   ^
+                   2
+            [a, b, d, e]
+          */
+          if (this.banList.length === 0) {
+            this.currentBan = null;
+            this.closePopup();
+          } else if (this.banList.length === idx) {
+            this.currentBan = this.banList[idx - 1];
+          } else {
+            this.currentBan = this.banList[idx];
+          }
+        });
     },
   },
 };
