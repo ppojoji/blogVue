@@ -1,7 +1,7 @@
 <template>
   <div class="cate">
     <select class="custom-select" id="cata" @change="cateSelected">
-      <option value="">[전체보기]</option>
+      <option value="0">[전체보기]</option>
       <option
         :value="cate.seq"
         v-for="cate in cates"
@@ -55,15 +55,16 @@ export default {
     console.log(api);
     api.cate.all().then((res) => {
       this.cates = res.data.cates;
+      const cate = this.cates.find((cate) => cate.name === this.initValue);
+      this.$emit("cateSelect", cate);
     });
   },
   methods: {
     cateSelected(e) {
-      //console.log("[cate]", e.target.value);
-      // console.log("[cate] ", this.selectedCate);
-
-      // FIXME e.target.value에 해당하는 cateogry 자체를 반환해야 함
-      this.$emit("cateSelect", e.target.value);
+      const seq = parseInt(e.target.value);
+      console.log(seq);
+      const cate = this.cates.find((cate) => cate.seq === seq);
+      this.$emit("cateSelect", cate);
     },
     popup() {
       this.popupVisible = true;

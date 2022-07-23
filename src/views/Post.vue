@@ -7,22 +7,6 @@
       :style="{ top: summary.y + 'px', left: summary.x + 'px' }"
       v-html="summary.content"
     ></div>
-    <!-- <div class="post-control">
-      <Cate class="fill-width" @cateSelect="selectCate" :initValue="cateName" />
-      <button
-        class="btn"
-        :class="{ enabled: timer, disabled: !timer }"
-        @click="
-          () => {
-            timer ? stopInterval() : startInterval();
-          }
-        "
-      >
-        <span class="material-icons-outlined">
-          {{ timer ? "restore" : "sync_disabled" }}</span
-        >
-      </button>
-    </div> -->
     <table class="table">
       <thead>
         <tr>

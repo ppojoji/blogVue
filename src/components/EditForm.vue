@@ -8,7 +8,7 @@
         placeholder="글제목"
         v-model="post.title"
       />
-      <Cate :initValue="cateSeq" @cateSelect="cateSelect" />
+      <Cate :initValue="category" @cateSelect="cateSelect" />
     </div>
 
     <div>
@@ -69,7 +69,8 @@ export default {
       summernoteJs: null,
       upfiles: [],
       cates: [],
-      cateSeq: 0,
+      cateSeq: 0, // 얘는 없어짐!!
+      activeCate: null,
       delTags: [], // []
       // totalSize: 0, // 파생 필드
       // upfileInfos: [],
@@ -88,7 +89,7 @@ export default {
         title: this.post.title,
         contents,
         upfiles: this.upfiles,
-        cate: this.cateSeq,
+        cate: this.activeCate.seq, // FIXME seq 말고 cate 자체를 넘겨야 함
         tags: this.delTags, // [{seq, tagName}, {seq, tagName}]
       });
     },
@@ -151,9 +152,10 @@ export default {
         e.target.value = "";
       });
     },
-    cateSelect(cateSeq) {
-      console.log("[CATEGORY]", cateSeq);
-      this.cateSeq = cateSeq;
+    cateSelect(cate) {
+      // FIXME  여기도 봐야함
+      console.log("[CATEGORY]", cate);
+      this.activeCate = cate;
     },
   },
   mounted() {

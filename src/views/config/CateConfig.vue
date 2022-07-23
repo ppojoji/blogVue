@@ -300,8 +300,7 @@ export default {
         });
     },
     cateSelected(e) {
-      //console.log("[cate]", e.target.value);
-      // console.log("[cate] ", this.selectedCate);
+      // FIXME 값이 아니라 CATE 자체를 넘겨야 함
       this.$emit("cateSelect", e.target.value);
     },
     updateUseYn(selected) {

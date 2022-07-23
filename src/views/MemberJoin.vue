@@ -11,10 +11,15 @@
             v-model="signup.id"
             type="text"
             maxlength="20"
-            @blur="propertyValid('id')"
+            @blur="validateId()"
           />
         </span>
-        <span class="error_next_box" v-if="!idValid">필수 정보입니다.</span>
+        <div class="error-box" v-if="idError.cnt > 0">
+          <div v-if="idError.size" class="error-msg">
+            4글자 이상이어야 합니다.
+          </div>
+          <div v-if="idError.dup" class="error-msg">중복된 아이디입니다.</div>
+        </div>
       </div>
       <div class="join_row">
         <h3 class="join_title">비밀번호</h3>
@@ -24,17 +29,18 @@
             v-model="signup.pwd"
             type="password"
             maxlength="16"
+            @input="resetPassword"
             @blur="passwordValid"
           />
         </span>
         <div class="error-box" v-if="passwordError.cnt > 0">
-          <div v-if="!passwordError.num" class="error-msg">
+          <div v-if="passwordError.num" class="error-msg">
             숫자가 필요합니다.
           </div>
-          <div v-if="!passwordError.char" class="error-msg">
+          <div v-if="passwordError.char" class="error-msg">
             영문자가 필요합니다.
           </div>
-          <div v-if="!passwordError.size" class="error-msg">
+          <div v-if="passwordError.size" class="error-msg">
             6글자 이상 필요합니다.
           </div>
         </div>
@@ -98,10 +104,15 @@
 
       <div class="join_row">
         <div class="btn_area">
-          <button
+          <!-- <button
             class="btn btn-primary"
             @click="join"
             :disabled="!passwordValidFlag || !passwordCheckFlag"
+          > -->
+          <button
+            class="btn btn-primary"
+            @click="join"
+            :disabled="error.id || error.pwd || error.emailId"
           >
             회원가입
           </button>
@@ -163,9 +174,14 @@ export default {
       passwordValidFlag: true,
       passwordError: {
         cnt: 0,
-        size: true,
-        num: true,
-        char: true,
+        size: false,
+        num: false,
+        char: false,
+      },
+      idError: {
+        cnt: 0,
+        size: false,
+        dup: false,
       },
       passwordCheckFlag: true,
     };
@@ -179,16 +195,76 @@ export default {
     },
   },
   methods: {
+    validateId() {
+      this.idError.cnt = 0;
+      this.idError.size = false;
+      this.idError.dup = false;
+
+      if (this.signup.id.length < 4) {
+        this.idError.cnt = 1;
+        this.idError.size = true;
+        this.syncState(); //
+        this.error.id = true;
+        this.success.id = false;
+        return;
+      }
+
+      api.user
+        .checkProp("id", this.signup.id)
+        .then((res) => {
+          console.log(res);
+          // if(this.idError.cnt > 0){}
+          this.syncState();
+          this.error["id"] = false;
+          this.success["id"] = true;
+        })
+        .catch((e) => {
+          console.log(e);
+          this.idError.dup = true;
+          this.idError.cnt++;
+          this.syncState();
+
+          this.error.id = true;
+          this.success.id = false;
+          // if (prop === "id") {
+          // } else if (prop === "email") {
+          //   this.error.emailId = true;
+          //   this.success.emailId = false;
+          // }
+        });
+    },
     // 비밀번호 유효성 체크
     passwordValid() {
       // 영문자 있는지 정규표현식
       // 숫자가 있는지 정규표현식
       // 전체 길이 확인하는 코드
-      if (/^(?=.*[a-z])(?=.*[0-9]).{6,12}$/.test(this.signup.pwd)) {
-        this.passwordValidFlag = true;
-      } else {
-        this.passwordValidFlag = false;
+      this.resetPassword();
+      console.log("[PWD]", this.signup.pwd);
+      if (!/[0-9]/.test(this.signup.pwd)) {
+        this.passwordError.num = true;
+        this.passwordError.cnt++;
       }
+      if (!/[a-zA-Z]/.test(this.signup.pwd)) {
+        this.passwordError.char = true;
+        this.passwordError.cnt++;
+      }
+      if (this.signup.pwd.length < 6) {
+        this.passwordError.size = true;
+        this.passwordError.cnt++;
+      }
+      if (this.passwordError.cnt > 0) {
+        this.error.pwd = true;
+      } else {
+        this.error.pwd = false;
+      }
+    },
+
+    resetPassword() {
+      console.log("!!");
+      this.passwordError.cnt = 0;
+      this.passwordError.num = false;
+      this.passwordError.char = false;
+      this.passwordError.size = false;
     },
     // 비밀번호 동일 여부 체크
     passwordCheckValid() {
@@ -197,6 +273,14 @@ export default {
       } else {
         this.passwordCheckFlag = false;
       }
+      this.error.pwd = !this.passwordCheckFlag;
+      // this.passwordCnt();
+    },
+    syncState() {
+      // idError, passWordError
+      // this.error.id = true | false
+      // this.error.pwd = true | false
+      //
     },
     join() {
       this.signup.email = this.email;
@@ -210,6 +294,10 @@ export default {
       }
       api.user.join(this.signup).then((res) => {
         console.log("[회원가입]", res);
+        toast.success("가입완료 되었습니다.", 3000);
+        this.$router.push({
+          path: "/login",
+        });
       });
     },
     propertyValid(prop) {

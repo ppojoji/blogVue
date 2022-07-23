@@ -16,16 +16,11 @@
         >
       </button>
     </div>
-    <PhotoPost v-if="boardType === 'PH'" :postList="lists">
-      <div class="controls" slot="footer">
-        <button class="btn btn-primary" @click="postWrite">글쓰기</button>
-      </div>
-    </PhotoPost>
-    <ListPost v-else :lists="lists">
-      <div class="controls" slot="footer">
-        <button class="btn btn-primary" @click="postWrite">글쓰기22</button>
-      </div>
-    </ListPost>
+    <PhotoPost v-if="boardType === 'PH'" :postList="lists"> </PhotoPost>
+    <ListPost v-else :lists="lists"> </ListPost>
+    <div class="controls">
+      <button class="btn btn-primary" @click="postWrite">글쓰기</button>
+    </div>
     <!-- <div class="controls">
       <button class="btn btn-primary" @click="postWrite">글쓰기</button>
     </div> -->
@@ -61,7 +56,7 @@ export default {
     this.cateName = this.$route.params.catename;
     console.log("[현재카테고리]", this.cateName);
     if (this.cateName) {
-      this.selectCate(this.cateName);
+      this.selectByCateName(this.cateName);
     } else {
       api.post.all().then((res) => {
         this.cates = res.data.cata;
@@ -84,10 +79,17 @@ export default {
       this.timer = null;
       // console.log("[PAUSED]");
     },
-    selectCate(cateName) {
+    selectCate(cate) {
+      if (cate) {
+        this.selectByCateName(cate.name);
+      } else {
+        this.selectByCateName(null);
+      }
+    },
+    selectByCateName(cateName) {
       console.log("1111111");
       let apiFn;
-      if (cateName === "") {
+      if (!cateName) {
         apiFn = api.post.all;
       } else {
         apiFn = api.post.findByCate;
@@ -104,7 +106,7 @@ export default {
       });
     },
     postWrite() {
-      this.$router.push("/write");
+      this.$router.push({ path: "/write", query: { cate: this.cateName } }); // "/write?cate=abcabc" query string
     },
   },
 };
@@ -116,5 +118,8 @@ export default {
   .fill-width {
     flex: 1 1 auto;
   }
+}
+.controls {
+  padding: 16px;
 }
 </style>

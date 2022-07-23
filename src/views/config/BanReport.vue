@@ -7,7 +7,15 @@
     </div>
     <BanList :banList="banList" @banclick="showBanControl"> </BanList>
     <PopupSlot v-if="popupVisible" @closePopup="closePopup()">
-      <h3>{{ getContent(currentBan) }}</h3>
+      <h3>{{ banText(currentBan.bancode) }}</h3>
+      <p class="content" v-if="hasContent(currentBan)">
+        {{ getContent(currentBan) }}
+      </p>
+      <p class="content empty" v-else>내용없음</p>
+      <p class="date">
+        {{ timeStampToDate(new Date(currentBan.repotertime)) }}
+      </p>
+      <p class="reporter">{{ currentBan.ID }}</p>
       <!-- <button @click="approve()">승인</button>
       <button @click="reject()">거절</button> -->
       <button @click="insertDecision('approve')">승인</button>
@@ -47,9 +55,17 @@ export default {
   methods: {
     getContent(ban) {
       if (this.banType === "P") {
-        return ban.CONTENTS;
+        return ban.contents;
       } else {
-        return ban.CONTENT;
+        return ban.content;
+      }
+    },
+    hasContent(ban) {
+      let content = this.getContent(ban);
+      if (content.length > 0) {
+        return true;
+      } else {
+        return false;
       }
     },
     banPostRepoter() {
@@ -188,6 +204,22 @@ export default {
     display: block;
     margin: 0;
   }
+}
+.content {
+  background-color: #cee8ff;
+  padding: 6px 12px;
+  &.empty {
+    color: #8192a9;
+    font-style: italic;
+  }
+}
+.date {
+  text-align: right;
+  margin-bottom: 0;
+}
+.reporter {
+  text-align: right;
+  margin-bottom: 0;
 }
 .table {
   tr {

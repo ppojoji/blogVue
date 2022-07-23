@@ -13,7 +13,8 @@
       <td class="ban-type">
         <span> {{ banText(ban.bancode) }}</span>
       </td>
-      <td>{{ getContent(ban) }}</td>
+      <td v-if="hasContent(ban)">{{ getContent(ban) }}</td>
+      <td v-else><span class="empty">내용없음</span></td>
       <td>{{ ban.ID }}</td>
     </tr>
   </table>
@@ -43,9 +44,17 @@ export default {
     },
     getContent(ban) {
       if (this.banType === "P") {
-        return ban.CONTENTS;
+        return ban.contents;
       } else {
-        return ban.CONTENT;
+        return ban.content;
+      }
+    },
+    hasContent(ban) {
+      let content = this.getContent(ban);
+      if (content.length > 0) {
+        return true;
+      } else {
+        return false;
       }
     },
     banClicked(ban) {
@@ -55,4 +64,11 @@ export default {
 };
 </script>
 
-<style></style>
+<style lang="scss" scoped>
+.table {
+  .empty {
+    color: #bbb;
+  }
+}
+</style>
+>

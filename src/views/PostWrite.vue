@@ -1,7 +1,12 @@
 <template>
   <div>
     <h3>글쓰기 화면입니다.</h3>
-    <EditForm :editMode="false" :post="post" @update="update" />
+    <EditForm
+      :editMode="false"
+      :post="post"
+      :category="cateName"
+      @update="update"
+    />
   </div>
 </template>
 
@@ -20,7 +25,12 @@ export default {
         category: null,
         tags: [],
       },
+      cateName: null,
     };
+  },
+  mounted() {
+    console.log("[qs]", this.$route.query);
+    this.cateName = this.$route.query.cate;
   },
   methods: {
     write() {},

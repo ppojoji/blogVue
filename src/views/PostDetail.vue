@@ -47,9 +47,7 @@
         nameProp="originalName"
         sizeProp="fileSize"
         :isImageFile="(file) => file.contentType.startsWith('image')"
-        :getImagePath="
-          (file) => `${process.env.VUE_APP_BACKEND_HOST}/upfile/${file.genName}`
-        "
+        :getImagePath="(file) => `${host}/upfile/${file.genName}`"
         v-bind:editMode="false"
         emptyMessage="첨부파일이 없습니다."
       />
@@ -114,6 +112,7 @@ export default {
   },
   data() {
     return {
+      host: process.env.VUE_APP_BACKEND_HOST,
       post: null,
       upfiles: [],
       readMode: true,
