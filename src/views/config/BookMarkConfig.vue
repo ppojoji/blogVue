@@ -8,7 +8,7 @@
       <tr>
         <th>제목</th>
         <th>삭제</th>
-        <th>수정일</th>
+        <th>북마크일</th>
       </tr>
       <tr v-for="bookmark in bookmarks" :key="bookmark.seq">
         <td @click="MyPost(bookmark.seq)">
@@ -24,7 +24,7 @@
             등록
           </button>
         </td>
-        <td>{{ Diff(bookmark.lastDate, currentTime) }}</td>
+        <td>{{ Diff(bookmark.bookMarkTime, currentTime) }}</td>
       </tr>
     </table>
   </div>

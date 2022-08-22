@@ -272,6 +272,15 @@ export default {
       }
     },
     showBanPopup(post) {
+      console.log("[ppp]", post);
+      if (this.me == null) {
+        toast.info("로그인 후에 신고가능 합니다.", 3000);
+        return;
+      }
+      if (this.me.id === post.writer.id) {
+        toast.info("본인이 작성한 글은 신고할수 없습니다", 3000);
+        return;
+      }
       this.currentPost = post;
       this.popupVisible = true;
     },

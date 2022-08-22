@@ -7,7 +7,7 @@
         :class="{ enabled: timer, disabled: !timer }"
         @click="
           () => {
-            timer ? stopInterval() : startInterval();
+            timer = !timer;
           }
         "
       >
@@ -17,7 +17,7 @@
       </button>
     </div>
     <PhotoPost v-if="boardType === 'PH'" :postList="lists"> </PhotoPost>
-    <ListPost v-else :lists="lists"> </ListPost>
+    <ListPost :timerOn="timer" v-else :lists="lists"> </ListPost>
     <div class="controls">
       <button class="btn btn-primary" @click="postWrite">글쓰기</button>
     </div>
@@ -45,12 +45,10 @@ export default {
       lists: [],
       limit: 0,
       boardType: null,
-      timer: null,
+
       cateName: null,
+      timer: true,
     };
-  },
-  beforeDestroy() {
-    this.stopInterval();
   },
   mounted() {
     this.cateName = this.$route.params.catename;
@@ -68,17 +66,6 @@ export default {
     // this.startInterval();
   },
   methods: {
-    startInterval() {
-      this.timer = window.setInterval(() => {
-        this.currentTime = new Date().getTime();
-        // console.log("[TICK]", this.currentTime);
-      }, 1000);
-    },
-    stopInterval() {
-      clearInterval(this.timer);
-      this.timer = null;
-      // console.log("[PAUSED]");
-    },
     selectCate(cate) {
       if (cate) {
         this.selectByCateName(cate.name);

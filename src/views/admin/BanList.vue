@@ -15,7 +15,7 @@
       </td>
       <td v-if="hasContent(ban)">{{ getContent(ban) }}</td>
       <td v-else><span class="empty">내용없음</span></td>
-      <td>{{ ban.ID }}</td>
+      <td>{{ ban.reporterId }}</td>
     </tr>
   </table>
 </template>

@@ -15,6 +15,11 @@ import util from "../service/util";
 // https://picsum.photos/400/400
 export default {
   props: ["post"],
+  data() {
+    return {
+      //host: process.env.VUE_APP_BACKEND_HOST,
+    };
+  },
   methods: {
     timeStampToDate(date) {
       return util.formatDate(date);
@@ -27,8 +32,12 @@ export default {
       });
     },
     getImage() {
+      const host = process.env.VUE_APP_BACKEND_HOST;
+      console.log("[사진사진]", `${host}`);
+
       if (this.post.upFiles.length > 0) {
-        return `${process.env.VUE_APP_BACKEND_HOST}/upfile/${this.post.upFiles[0].genName}`;
+        //return `${process.env.VUE_APP_BACKEND_HOST}/upfile/${this.post.upFiles[0].genName}`;
+        return `${host}/upfile/${this.post.upFiles[0].genName}`;
       } else {
         // IMPORTANT - JS에서 ASSET 경로 접근할때
         return require(`../assets/empty.jpg`);

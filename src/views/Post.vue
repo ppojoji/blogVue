@@ -108,7 +108,7 @@ import TagView from "../../src/views/TagView.vue";
 
 export default {
   components: { TagView },
-  props: ["lists"],
+  props: ["lists", "timerOn"],
   data() {
     return {
       // cates: [],
@@ -126,19 +126,27 @@ export default {
       cateName: null,
     };
   },
-  mounted() {},
+  mounted() {
+    // this.startInterval();
+    // if (this.timerOn == true) {
+    //   this.startInterval();
+    // }
+  },
+  beforeDestroy() {
+    this.stopInterval();
+  },
   methods: {
-    // startInterval() {
-    //   this.timer = window.setInterval(() => {
-    //     this.currentTime = new Date().getTime();
-    //     // console.log("[TICK]", this.currentTime);
-    //   }, 1000);
-    // },
-    // stopInterval() {
-    //   clearInterval(this.timer);
-    //   this.timer = null;
-    //   // console.log("[PAUSED]");
-    // },
+    startInterval() {
+      this.timer = window.setInterval(() => {
+        this.currentTime = new Date().getTime();
+        console.log("[TICK]", this.currentTime);
+      }, 1000);
+    },
+    stopInterval() {
+      clearInterval(this.timer);
+      this.timer = null;
+      // console.log("[PAUSED]");
+    },
     diff(time, current) {
       return util.timeDiff(time, current);
     },
@@ -191,6 +199,28 @@ export default {
         this.lists = res.data.posts;
       });
     },
+  },
+  watch: {
+    timerOn: {
+      immediate: true,
+      handler(cur) {
+        if (cur == true) {
+          this.startInterval();
+        } else {
+          this.stopInterval();
+        }
+      },
+    },
+    /*
+    timerOn(cur) {
+      console.log(cur);
+      if (cur == true) {
+        this.startInterval();
+      } else {
+        this.stopInterval();
+      }
+    },
+    */
   },
 };
 </script>

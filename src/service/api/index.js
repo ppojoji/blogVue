@@ -129,6 +129,22 @@ const post = {
       },
     });
   },
+  /**
+   * 글 편집화면에서 첨부한 파일을 서버에 업로드합니다.
+   */
+  uploadFile: (postSeq, file) => {
+    const form = new FormData();
+    form.append("file", file);
+
+    return axios.post("/article/api/upFile/" + postSeq, form, {
+      headers: {
+        "Content-Type": "multipart/formdata",
+      },
+    });
+  },
+  deleteFile: (genName) => {
+    return axios.delete("/article/api/deleteFile/" + genName);
+  },
   update: (postSeq, title, contents, cateSeq, tags) => {
     console.log("수정!");
 

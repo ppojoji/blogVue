@@ -105,6 +105,15 @@ export default {
         });
     },
     showBanPopup(reply) {
+      console.log("[fffff]", reply);
+      if (this.user == null) {
+        toast.info("로그인 후에 신고가능 합니다.", 3000);
+        return;
+      }
+      if (this.user.id === reply.writer.id) {
+        toast.info("본인이 작성한 글은 신고할수 없습니다", 3000);
+        return;
+      }
       this.currentReply = reply;
       this.popupVisible = true;
     },
@@ -113,6 +122,7 @@ export default {
     },
     policyClick(ban) {
       console.log("클릭됨", ban.code);
+
       api.reply.ban(this.currentReply.seq, ban.code).then((res) => {
         console.log(res);
         toast.success("신고 완료", 3000);

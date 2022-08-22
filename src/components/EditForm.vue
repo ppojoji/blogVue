@@ -8,7 +8,10 @@
         placeholder="글제목"
         v-model="post.title"
       />
-      <Cate :initValue="category" @cateSelect="cateSelect" />
+      <Cate
+        :initValue="activeCate ? activeCate.name : ''"
+        @cateSelect="cateSelect"
+      />
     </div>
 
     <div>
@@ -39,8 +42,8 @@
         keyProp="name"
         nameProp="name"
         sizeProp="size"
-        :isImageFile="(file) => file.type.startsWith('image')"
-        :getImagePath="(file) => file.src"
+        :isImageFile="isImageFile"
+        :getImagePath="getImagePath"
         v-bind:editMode="true"
         @fileDelete="fileDelete"
         emptyMessage="파일 첨부 선택가능"
@@ -60,6 +63,7 @@ import api from "../service/api";
 import Cate from "../components/Cate.vue";
 import UpfileList from "../components/UpfileList.vue";
 import TagView from "../views/TagView.vue";
+import toast from "../components/ui/toast";
 /* global $ */
 export default {
   components: { UpfileList, Cate, TagView },
@@ -69,7 +73,7 @@ export default {
       summernoteJs: null,
       upfiles: [],
       cates: [],
-      cateSeq: 0, // 얘는 없어짐!!
+      // cateSeq: 0, // 얘는 없어짐!!
       activeCate: null,
       delTags: [], // []
       // totalSize: 0, // 파생 필드
@@ -103,6 +107,11 @@ export default {
         const src = reader.result;
         file.src = src;
         this.upfiles.push(file);
+
+        // (4) 편집 상태에서는 첨부된 파일을 서버로 보내서 업로드해버림!
+        if (this.editMode) {
+          api.post.uploadFile(this.post.seq, file).then(() => {});
+        }
       });
       reader.readAsDataURL(file); // (2)
 
@@ -111,10 +120,11 @@ export default {
     },
     fileDelete(file) {
       console.log("[지울 파일] ", file);
-      const idx = this.upfiles.findIndex((f) => f === file);
+      api.post.deleteFile(file.genName).then(() => {
+        const idx = this.upfiles.findIndex((f) => f === file);
+        this.upfiles.splice(idx, 1);
+      });
       // this.totalSize -= file.size;
-
-      this.upfiles.splice(idx, 1);
     },
     tagClose(tag) {
       //api.post.tagDelete().then((res) => {
@@ -125,23 +135,16 @@ export default {
       this.delTags.splice(idx, 1);
       //});
     },
-    /*
-        $('#input).keyup((e) => {
-          e.target.value
-          if(e.keyCode === 13) {
-
-          }
-        })
-        */
     tagInsert(e) {
       console.log("[여기]", e);
-      /*
-      this.delTags.push({
-        seq: parseInt(Math.random() * 100000),
-        tagName: e.target.value,
-      });
-       e.target.value = "";
-       */
+      const index = this.delTags.findIndex(
+        (tag) => e.target.value === tag.tagName
+      );
+      if (index >= 0) {
+        toast.info("이미 있는 태그 입니다.", 3000);
+        return;
+      }
+
       api.post.tagInsert(e.target.value).then((res) => {
         console.log(res);
         // this.delTags.push({
@@ -156,6 +159,21 @@ export default {
       // FIXME  여기도 봐야함
       console.log("[CATEGORY]", cate);
       this.activeCate = cate;
+    },
+    isImageFile(file) {
+      if (file.seq) {
+        return file.contentType.startsWith("image");
+      } else {
+        return file.type.startsWith("image");
+      }
+    },
+    getImagePath(file) {
+      console.log("pdddd");
+      if (file.seq) {
+        return "http://localhost:8080/upfile/" + file.genName;
+      } else {
+        return file.src;
+      }
     },
   },
   mounted() {
@@ -189,7 +207,9 @@ export default {
       this.cates = res.data.cata;
     });
     if (this.editMode == true) {
-      this.cateSeq = this.post.category ? this.post.category.seq : 0;
+      this.activeCate = this.post.category;
+      this.upfiles = this.post.upFiles;
+      // this.cateSeq = this.post.category ? this.post.category.seq : 0;
     }
   },
 };

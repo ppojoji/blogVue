@@ -27,7 +27,8 @@
     </div> -->
     <PostOfTag v-if="activeTag" :tag="activeTag" @activePost="popupPosts" />
     <PopupSlot v-if="activePost" @closePopup="closePopup()">
-      <p>{{ activePost.contents }}</p>
+      <!-- <p>{{activePost.contents}}</p> -->
+      <p v-html="activePost.contents"></p>
       <button @click="detail()">자세히</button>
     </PopupSlot>
     <!--
@@ -119,6 +120,7 @@ export default {
     },
     popupPosts(post) {
       this.activePost = post;
+      console.log("[썸머노트]", this.activePost);
     },
     closePopup() {
       this.activePost = null;
