@@ -181,9 +181,14 @@ export default {
       });
     },
     buttonMain() {
-      this.$router.push({ path: `/posts/${this.post.category.name}` });
+      if (this.post.category) {
+        this.$router.push({ path: `/posts/${this.post.category.name}` });
+      } else {
+        this.$router.push({ path: `/` });
+      }
     },
     back() {
+      console.log("cancel???");
       this.readMode = true;
     },
     popupClose() {

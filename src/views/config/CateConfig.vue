@@ -1,17 +1,6 @@
 <template>
   <div>
     <h3>카테고리 편집 화면</h3>
-    <select class="custom-select" id="cata" @change="cateSelected">
-      <option value="">[전체보기]</option>
-      <option
-        :value="cate.name"
-        v-for="cate in cates"
-        :key="cate.seq"
-        :selected="cate.name === initValue"
-      >
-        {{ cate.name }}
-      </option>
-    </select>
     <button class="btn btn-primary" @click="popup">카테고리 추가</button>
     <Popup v-if="popupVisible" @closePopup="closePopup" @addCate="addCate" />
     <RadioPopup
@@ -41,6 +30,7 @@
             v-if="cate === activeCate"
             @keyup.enter="updateCateName($event, cate)"
             @keyup.esc="setActiveCate(null)"
+            @blur="setActiveCate(null)"
             @keydown.tab.exact.prevent="nextTab(cate, 1)"
             @keydown.shift.tab.prevent="nextTab(cate, -1)"
           />
@@ -298,10 +288,6 @@ export default {
           // });
           // this.autoClosePopup();
         });
-    },
-    cateSelected(e) {
-      // FIXME 값이 아니라 CATE 자체를 넘겨야 함
-      this.$emit("cateSelect", e.target.value);
     },
     updateUseYn(selected) {
       console.log("선택된 값", selected);

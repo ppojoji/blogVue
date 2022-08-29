@@ -6,6 +6,7 @@
       :post="post"
       :category="cateName"
       @update="update"
+      @back="back"
     />
   </div>
 </template>
@@ -51,6 +52,10 @@ export default {
             this.$router.replace("/");
           }
         });
+    },
+    back() {
+      console.log("cancel???");
+      this.$router.go(-1);
     },
   },
 };

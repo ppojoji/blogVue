@@ -89,6 +89,10 @@ export default {
     update() {
       // console.log("[TITLE2] ", this.post.title);
       const contents = $("#content").summernote("code");
+      if (!this.activeCate) {
+        toast.warning("카테고리를 선택해 주세요.", 3000);
+        return;
+      }
       this.$emit("update", {
         title: this.post.title,
         contents,
@@ -158,6 +162,7 @@ export default {
     cateSelect(cate) {
       // FIXME  여기도 봐야함
       console.log("[CATEGORY]", cate);
+
       this.activeCate = cate;
     },
     isImageFile(file) {

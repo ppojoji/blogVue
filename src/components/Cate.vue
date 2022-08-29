@@ -64,6 +64,7 @@ export default {
       const seq = parseInt(e.target.value);
       console.log(seq);
       const cate = this.cates.find((cate) => cate.seq === seq);
+      console.log("[카테고리 선택]", cate);
       this.$emit("cateSelect", cate);
     },
     popup() {
