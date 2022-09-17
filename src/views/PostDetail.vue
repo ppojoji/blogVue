@@ -24,7 +24,7 @@
         />
       </div>
       <div class="writer">
-        <span>{{ post.writer.id }}</span
+        <span @click="notePopup()">{{ post.writer.id }}</span
         ><span class="date">{{ post.creationDate }}</span>
       </div>
       <div class="content" v-html="post.contents"></div>
@@ -40,6 +40,14 @@
       />
       <PopupSlot v-if="popupVisible" @closePopup="popupClose()">
         <BanCode @bancode="policyClick" />
+      </PopupSlot>
+      <!-- 효율적인 코드는 아닌데 일단! 돌아가게 하겠음.-->
+      <PopupSlot v-if="noteVisible" @closePopup="notePopupClose()">
+        <NoteForm
+          :receiver="post.writer"
+          :sender="me"
+          @close="notePopupClose()"
+        />
       </PopupSlot>
       <UpfileList
         :files="upfiles"
@@ -82,6 +90,8 @@ import toast from "../components/ui/toast";
 import ReplyView from "../components/ReplyView.vue";
 import PopupSlot from "../components/ui/PopupSlot.vue";
 import BanCode from "../components/BanCode.vue";
+import NoteForm from "../components/NoteForm.vue";
+
 // import { mapState } from "vuex";
 
 const msg = {
@@ -109,6 +119,7 @@ export default {
     ReplyView,
     PopupSlot,
     BanCode,
+    NoteForm,
   },
   data() {
     return {
@@ -121,7 +132,7 @@ export default {
       activeTag: null,
       bookMarked: false,
       popupVisible: false,
-
+      noteVisible: false,
       // tags: [],
     };
   },
@@ -296,6 +307,12 @@ export default {
         console.log(res);
         //toast.success("신고 완료", 3000);
       });
+    },
+    notePopup() {
+      this.noteVisible = true;
+    },
+    notePopupClose() {
+      this.noteVisible = false;
     },
   },
   watch: {

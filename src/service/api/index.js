@@ -282,6 +282,24 @@ const admin = {
     },
   },
 };
+
+const note = {
+  send: (sender, receiver, content) => {
+    //console.log(senderSeq, receiverSeq, content);
+    return axios.post(`/note`, { sender, receiver, content });
+  },
+  /*
+   SELECT :  axios.get..
+   insert : axios.post
+   update : axios.put...
+   delete : axios.delete..
+  */
+  loadSendNote: () => axios.get(`/notes/S`),
+  loadReceiverNote: () => axios.get(`/notes/R`),
+  readNote: (noteSeq) => axios.put(`/note/${noteSeq}`),
+  readSentNote: (noteSeq) => axios.get(`/note/${noteSeq}`),
+  deleteNote: (noteSeq, mode) => axios.delete(`/note/${noteSeq}/${mode}`),
+};
 export { admin, cate, user, post };
 export default {
   cate,
@@ -291,4 +309,5 @@ export default {
   admin,
   tag,
   bookMark,
+  note,
 };

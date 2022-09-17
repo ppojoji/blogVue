@@ -74,6 +74,10 @@ import PopupSlot from "../components/ui/PopupSlot.vue";
 import Find from "../components/ui/Find.vue";
 import api from "../service/api";
 
+const errors = {
+  BANNED_USER: "정지 기간중입니다.",
+  LOGIN_FAILED: "아이디나 비번이 틀립니다.",
+};
 export default {
   components: { PopupSlot, Find },
   data() {
@@ -109,17 +113,12 @@ export default {
             this.$emit("loginSuccess", res.data.user);
             toast.success("안녕하세요", 3000);
           } else {
-            // this.$store.commit("addMessage", {
-            //   text: "로그인 실패",
-            //   type: "error",
-            //   duration: 3000,
-            // });
-            toast.error("로그인 실패", -1);
             this.error = true;
           }
         })
-        .catch((error) => {
-          console.log(error);
+        .catch((err) => {
+          const message = errors[err.response.data.cause] || "로그인 실패";
+          toast.error(message, -1);
         });
     },
     ShowOpenPwd() {

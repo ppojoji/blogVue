@@ -1,6 +1,6 @@
 <template>
   <div class="tag-wrapper">
-    <h3>테그별 글 모음</h3>
+    <h3>태그별 글 모음</h3>
     <p>{{ totalPosts }}</p>
     <div class="tag-cloud">
       <div
@@ -10,7 +10,7 @@
         :key="tag.seq"
         @click="tagList(tag)"
       >
-        {{ tag.tagName }}({{ tag.posts.length }})
+        {{ tag.tagName }}({{ tag.tagCount }})
       </div>
     </div>
     <!-- <div class="posts">
@@ -74,7 +74,7 @@ export default {
       let total = 0;
       for (let i = 0; i < this.tags.length; i++) {
         // reduce라는걸 이용할 수도 있음.
-        total += this.tags[i].posts.length;
+        total += this.tags[i].tagCount;
       }
       this.totalPosts = total; // 전체 글 갯수
 
@@ -85,7 +85,7 @@ export default {
         2) 0 ta와 tb 중에 뭐가 앞에 와도 상관없음 [..., tb, ..., ta, ]
         3) 양수 tb(오른쪽)가 ta(왼쪽) 보다 먼저 나와야 함
         */
-        return -1 * (ta.posts.length - tb.posts.length); // 4, 2 = -2
+        return -1 * (ta.tagCount - tb.tagCount); // 4, 2 = -2
       });
 
       // B. 상위 10%는 large로 사이즈를 정해줌
@@ -100,11 +100,11 @@ export default {
 
       // 1. 1개라도 있는 태그 필더링
       this.validTags = this.tags.filter((tag) => {
-        return tag.posts.length > 0;
+        return tag.tagCount > 0;
       });
       // 2. 0개인 태그 필터링
       this.emptyTags = this.tags.filter((tag) => {
-        return tag.posts.length === 0;
+        return tag.tagCount === 0;
       });
     });
   },
@@ -149,6 +149,13 @@ export default {
       font-size: 1rem; // 16px; 18px; 20px;
       &.small {
         font-size: 1rem;
+        :hover {
+          background-color: yellow;
+        }
+        :focus {
+          box-shadow: 0 0.5em 0.5em -0.4em var(--hover);
+          transform: translateY(-0.25em);
+        }
       }
       &.medium {
         font-size: 1.2rem;

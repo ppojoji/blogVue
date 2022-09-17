@@ -1,6 +1,9 @@
 <template>
   <div>
     <div class="cate-list container-fluid">
+      <div class="row notes">
+        <div class="note-box col-12">여기에 쪽지 들어감</div>
+      </div>
       <div class="row notice">
         <div class="col-box col-12">
           <div class="cate-box" v-if="notice">

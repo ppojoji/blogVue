@@ -79,7 +79,7 @@ export default {
     },
     banDuration(userSeq, duration) {
       // const banUserSeq = 3323;
-      console.log(duration);
+      console.log("[userSeq] >>> ", userSeq, "[duration] >>> ", duration);
       api.admin.ban.banDuration(userSeq, duration).then((res) => {
         console.log(res);
       });
@@ -96,6 +96,24 @@ export default {
     padding: 8px;
     .ctrl {
       text-align: right;
+    }
+  }
+}
+.ctrl {
+  > button {
+    margin: 4px;
+    outline: none;
+    background-color: #8e9ddc;
+    //display: flex;
+    padding: 8px;
+    border-radius: 40px;
+    border: none;
+    color: black;
+    box-shadow: rgba(0, 0, 0, 0.25) 0px 14px 28px,
+      rgba(0, 0, 0, 0.22) 0px 10px 10px;
+    &:active {
+      background-color: #5c72d6;
+      transform: translate(2px, 2px);
     }
   }
 }
