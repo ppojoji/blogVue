@@ -22,7 +22,7 @@ export default {
 };
 </script>
 
-<style lang="scss" scoiped>
+<style lang="scss" scoped>
 .popup-wrapper {
   z-index: 100;
   position: fixed;
@@ -47,6 +47,7 @@ export default {
     width: 90%;
     transform: translate(-50%, -50%);
     padding: 16px;
+    max-width: 600px;
   }
 }
 </style>

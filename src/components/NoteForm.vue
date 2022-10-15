@@ -9,12 +9,15 @@
         v-model="message"
       ></textarea>
     </div>
+    <div class="error" v-if="textOverflow">500 글자를 초과 하였습니다.</div>
     <div class="footer">
       <div class="btns">
-        <button @click="sendNote()">전송</button>
+        <button @click="sendNote()" :disabled="textOverflow">전송</button>
         <button>취소</button>
       </div>
-      <div class="char-cnt">{{ message.length }}/500</div>
+      <div class="char-cnt" :class="{ error: textOverflow }">
+        {{ message.length }}/500
+      </div>
     </div>
   </div>
 </template>
@@ -28,6 +31,7 @@ export default {
   data() {
     return {
       message: "",
+      textOverflow: false,
     };
   },
   methods: {
@@ -43,6 +47,11 @@ export default {
   watch: {
     message(cur) {
       console.log(">>", cur.length);
+      if (cur.length > 500) {
+        this.textOverflow = true;
+      } else {
+        this.textOverflow = false;
+      }
     },
   },
 };
@@ -54,6 +63,12 @@ export default {
     display: flex;
     .btns {
       flex: 1 1 auto;
+    }
+    .char-cnt {
+      &.error {
+        color: red;
+        font-weight: 500;
+      }
     }
   }
 }

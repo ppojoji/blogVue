@@ -20,7 +20,7 @@
         >LOGOUT</a
       >
       <router-link class="menu-item" to="/login" v-else>LOGIN</router-link>
-      <router-link class="menu-item" to="/me" v-if="user">{{
+      <router-link class="menu-item" to="/me/post" v-if="user">{{
         user.email
       }}</router-link>
       <router-link

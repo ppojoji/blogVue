@@ -111,7 +111,6 @@ export default {
       popupVisible: false,
       editCate: null,
       targetProp: null,
-      targetModel: null,
       initModelValue: null,
       // replyYnCate: null,
     };

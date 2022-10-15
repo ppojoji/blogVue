@@ -1,0 +1,41 @@
+button.form {
+    margin: 4px;
+    outline: none;
+    padding: 8px;
+    border-radius: 10px;
+    border: none;
+    box-shadow: rgba(0, 0, 0, 0.25) 0px 14px 28px,
+      rgba(0, 0, 0, 0.22) 0px 10px 10px;
+    &:active {
+      transform: translate(2px, 2px);
+    }
+    &.bora {
+      background-color: #8e9ddc;
+      &:hover {
+        background-color: #7488d8;
+      }
+      &:active {
+        background-color: #677ccf;
+      }
+    }
+    &.red {
+      background-color: #ff533e;
+      color: white;
+      &:hover {
+        background-color: #e1361f;
+      }
+      &:active {
+        background-color: #d56253;
+      }
+    }
+    &.green {
+        background-color: #d9ff8e;
+        color: #31420e;
+        &:hover {
+          background-color: #bae464;
+        }
+        &:active {
+          background-color: #89a74f;
+        }
+      }
+  }

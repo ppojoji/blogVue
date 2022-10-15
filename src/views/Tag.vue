@@ -5,7 +5,12 @@
     <div class="tag-cloud">
       <div
         class="tag"
-        :class="tag.size"
+        :class="{
+          active: activeTag === tag,
+          small: tag.size === 'small',
+          medium: tag.size === 'medium',
+          large: tag.size === 'large',
+        }"
         v-for="tag in tags"
         :key="tag.seq"
         @click="tagList(tag)"
@@ -138,6 +143,7 @@ export default {
   padding: 16px;
   .tag-cloud {
     display: flex;
+    row-gap: 8px;
     column-gap: 8px;
     flex-wrap: wrap;
     align-items: baseline;
@@ -147,22 +153,30 @@ export default {
       0px 4px 16px 0px rgba(90, 125, 188, 0.05);
     .tag {
       font-size: 1rem; // 16px; 18px; 20px;
+      cursor: pointer;
+      padding: 4px 5px;
+      border-radius: 8px;
+      user-select: none;
+      &:hover {
+        background-color: rgb(213, 246, 47);
+        box-shadow: 1px 1px 4px #0000004d;
+      }
+      &.active {
+        box-shadow: 0 0.5em 0.5em -0.4em var(--hover);
+        transform: translateY(-0.25em);
+        background: rgb(159, 255, 49);
+        box-shadow: 1px 1px 4px #0000004d;
+      }
       &.small {
-        font-size: 1rem;
-        :hover {
-          background-color: yellow;
-        }
-        :focus {
-          box-shadow: 0 0.5em 0.5em -0.4em var(--hover);
-          transform: translateY(-0.25em);
-        }
+        font-size: 0.95rem;
+        font-weight: 300;
       }
       &.medium {
-        font-size: 1.2rem;
+        font-size: 1.15rem;
       }
       &.large {
-        font-size: 1.5rem;
-        font-weight: bold;
+        font-size: 1.35rem;
+        font-weight: 500;
       }
     }
   }

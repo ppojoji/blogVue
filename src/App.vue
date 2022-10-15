@@ -6,20 +6,23 @@
       <router-link to="/about">About</router-link> |
       <router-link to="/login">login</router-link>
     </div> -->
-    <router-view />
+    <router-view :key="$route.params.type" />
     <Toast />
+    <MessageView />
     <Splash v-if="!$store.state.user.appReady" />
   </div>
 </template>
 <script>
 import Nav from "./views/Nav.vue";
 import Toast from "./components/ui/toast/ToastUI.vue";
+import MessageView from "./components/MessageView.vue";
 import Splash from "./components/Splash.vue";
 
 export default {
   components: {
     Nav,
     Toast,
+    MessageView,
     Splash,
   },
 };
@@ -30,7 +33,7 @@ body {
   margin: 0;
 }
 #app {
-  font-family: Avenir, Helvetica, Arial, sans-serif;
+  font-family: "Noto Sans KR", Avenir, Helvetica, Arial, sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
 }

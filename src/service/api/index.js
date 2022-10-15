@@ -299,6 +299,7 @@ const note = {
   readNote: (noteSeq) => axios.put(`/note/${noteSeq}`),
   readSentNote: (noteSeq) => axios.get(`/note/${noteSeq}`),
   deleteNote: (noteSeq, mode) => axios.delete(`/note/${noteSeq}/${mode}`),
+  queryMessage: (maxSeq) => axios.get(`/notes/new/${maxSeq}`),
 };
 export { admin, cate, user, post };
 export default {

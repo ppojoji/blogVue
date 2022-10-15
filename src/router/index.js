@@ -57,7 +57,7 @@ const routes = [
     component: PostDetail,
   },
   {
-    path: "/me",
+    path: "/me/:type",
     name: "userInfo",
     component: UserInfo,
     meta: {
