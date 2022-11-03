@@ -288,6 +288,10 @@ const note = {
     //console.log(senderSeq, receiverSeq, content);
     return axios.post(`/note`, { sender, receiver, content });
   },
+  sendReply: (sender, receiver, content, prev_note) => {
+    //console.log(senderSeq, receiverSeq, content);
+    return axios.post(`/note/reply`, { sender, receiver, content, prev_note });
+  },
   /*
    SELECT :  axios.get..
    insert : axios.post

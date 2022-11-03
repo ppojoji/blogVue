@@ -64,12 +64,12 @@ export default {
     },
   },
   watch: {
-    user(cur) {
-      console.log("message view]", cur);
-      if (cur) {
-        const userSeq = cur.seq;
-        const seq = localStorage.getItem(`notes.${userSeq}`);
-        this.maxSeq = seq ? parseInt(seq) : 0;
+    user(loginUser) {
+      console.log("message view]", loginUser);
+      if (loginUser) {
+        // const userSeq = loginUser.seq;
+        // const seq = localStorage.getItem(`notes.${userSeq}`);
+        this.maxSeq = loginUser.read_note || 0; // seq ? parseInt(seq) : 0;
         this.startTimer();
       }
     },

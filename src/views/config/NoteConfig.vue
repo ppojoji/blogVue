@@ -25,6 +25,7 @@
         <th>보낸시간</th>
         <th>읽은시간</th>
         <th>삭제</th>
+        <th>이력</th>
       </tr>
       <tr v-for="note in notes" :key="note.seq" @click="readNote(note)">
         <td>{{ note.seq }}</td>
@@ -43,13 +44,42 @@
             delete_forever
           </span>
         </td>
+        <td><button @click.stop="showHistory(note)">조회</button></td>
       </tr>
       <PopupSlot v-if="noteVisible" @closePopup="popupClose()">
         <div>{{ activeNote.content }}</div>
+        <div v-if="activeNote.count > 0" class="rep-cont">
+          {{ activeNote.count }}개 답변 <span v-if="mode === 'R'">보냈음</span
+          ><span v-else>받았음</span>
+        </div>
+        <template v-else>
+          <div v-if="mode === 'R'">보낸 답변이 없습니다.</div>
+          <div v-else>받은 답변이 없습니다.</div>
+        </template>
         <div class="ctrl">
+          <button v-if="mode === 'R'" class="form bora" @click="ReplyInsert()">
+            답변하기
+          </button>
           <button class="form bora" @click="popupClose()">닫기</button>
           <button class="form red" @click="showAlert(activeNote)">삭제</button>
         </div>
+      </PopupSlot>
+      <PopupSlot v-if="replyPopupVisible" @closePopup="replyPopupClose()">
+        <ReplyForm
+          :receiver="{
+            seq: activeNote.sender,
+            userId: activeNote.senderId,
+          }"
+          :sender="{
+            seq: activeNote.receiver,
+            userId: activeNote.receiverId,
+          }"
+          :prev_note="activeNote"
+          @close="replyPopupClose()"
+        />
+      </PopupSlot>
+      <PopupSlot v-if="historyVisible">
+        <NoteHistory :note="historyVisible" />
       </PopupSlot>
       <AppAlert
         v-if="alertVisible"
@@ -67,9 +97,11 @@ import PopupSlot from "../../components/ui/PopupSlot.vue";
 import toast from "../../components/ui/toast";
 // import MessageView from "../../components/MessageView.vue";
 import AppAlert from "../../components/form/AppAlert.vue";
-
+import ReplyForm from "../../components/ReplyForm.vue";
+import NoteHistory from "../../components/note/NoteHistory.vue";
 export default {
-  components: { PopupSlot, AppAlert },
+  components: { PopupSlot, AppAlert, ReplyForm, NoteHistory },
+  props: ["receiver"],
   data() {
     return {
       notes: null,
@@ -77,6 +109,8 @@ export default {
       activeNote: null,
       mode: null,
       alertVisible: false,
+      replyPopupVisible: false,
+      historyVisible: false,
     };
   },
   mounted() {
@@ -170,6 +204,16 @@ export default {
     showAlert(note) {
       this.alertVisible = true;
       this.activeNote = note;
+    },
+    ReplyInsert() {
+      this.replyPopupVisible = true;
+    },
+    replyPopupClose() {
+      this.replyPopupVisible = false;
+    },
+    showHistory(note) {
+      console.log("[조회 팝업 띄우기]", note);
+      this.historyVisible = note;
     },
   },
 };
