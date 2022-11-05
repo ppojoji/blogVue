@@ -292,6 +292,7 @@ const note = {
     //console.log(senderSeq, receiverSeq, content);
     return axios.post(`/note/reply`, { sender, receiver, content, prev_note });
   },
+  noteHistory: (noteSeq, mode) => axios.get(`/note/history/${noteSeq}/${mode}`),
   /*
    SELECT :  axios.get..
    insert : axios.post

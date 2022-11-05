@@ -44,7 +44,11 @@
             delete_forever
           </span>
         </td>
-        <td><button @click.stop="showHistory(note)">조회</button></td>
+        <td>
+          <button class="btn-history" @click.stop="showHistory(note)">
+            조회
+          </button>
+        </td>
       </tr>
       <PopupSlot v-if="noteVisible" @closePopup="popupClose()">
         <div>{{ activeNote.content }}</div>
@@ -78,8 +82,12 @@
           @close="replyPopupClose()"
         />
       </PopupSlot>
-      <PopupSlot v-if="historyVisible">
-        <NoteHistory :note="historyVisible" />
+      <PopupSlot v-if="historyVisible" @closePopup="showHistoryClose()">
+        <NoteHistory
+          :note="historyVisible"
+          :mode="mode"
+          @close="showHistoryClose()"
+        />
       </PopupSlot>
       <AppAlert
         v-if="alertVisible"
@@ -99,6 +107,7 @@ import toast from "../../components/ui/toast";
 import AppAlert from "../../components/form/AppAlert.vue";
 import ReplyForm from "../../components/ReplyForm.vue";
 import NoteHistory from "../../components/note/NoteHistory.vue";
+
 export default {
   components: { PopupSlot, AppAlert, ReplyForm, NoteHistory },
   props: ["receiver"],
@@ -215,6 +224,9 @@ export default {
       console.log("[조회 팝업 띄우기]", note);
       this.historyVisible = note;
     },
+    showHistoryClose() {
+      this.historyVisible = false;
+    },
   },
 };
 </script>
@@ -258,6 +270,11 @@ export default {
   .ctrl {
     display: flex;
     justify-content: flex-end;
+  }
+  .btn-history {
+    border: none;
+    background: none;
+    color: rgb(38, 158, 150);
   }
 }
 </style>
