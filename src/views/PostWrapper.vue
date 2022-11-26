@@ -18,12 +18,19 @@
     </div>
     <PhotoPost v-if="boardType === 'PH'" :postList="lists"> </PhotoPost>
     <ListPost :timerOn="timer" v-else :lists="lists"> </ListPost>
-    <div class="controls">
+    <!--v-if="user.admin === 'Y'" -->
+    <div class="controls" v-if="boardType === 'NC'">
+      <button
+        class="btn btn-primary"
+        v-if="user && user.admin === 'Y'"
+        @click="postWrite"
+      >
+        공지사항 작성
+      </button>
+    </div>
+    <div class="controls" v-else>
       <button class="btn btn-primary" @click="postWrite">글쓰기</button>
     </div>
-    <!-- <div class="controls">
-      <button class="btn btn-primary" @click="postWrite">글쓰기</button>
-    </div> -->
   </div>
 </template>
 
@@ -64,6 +71,11 @@ export default {
       });
     }
     // this.startInterval();
+  },
+  computed: {
+    user() {
+      return this.$store.state.user.loginUser;
+    },
   },
   methods: {
     selectCate(cate) {

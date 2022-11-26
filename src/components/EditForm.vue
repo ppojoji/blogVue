@@ -163,6 +163,7 @@ export default {
       // FIXME  여기도 봐야함
       console.log("[CATEGORY]", cate);
 
+      // if(user =)
       this.activeCate = cate;
     },
     isImageFile(file) {

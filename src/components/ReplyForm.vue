@@ -40,17 +40,10 @@ export default {
   methods: {
     sendReply() {
       this.prev_note.seq;
-      api.note
-        .sendReply(
-          this.sender.seq,
-          this.receiver.seq,
-          this.message,
-          this.prev_note.seq
-        )
-        .then(() => {
-          toast.success("답변이 등록 되었습니다.", 3000);
-          this.$emit("close");
-        });
+      api.note.sendReply(this.message, this.prev_note.seq).then(() => {
+        toast.success("답변이 등록 되었습니다.", 3000);
+        this.$emit("close");
+      });
     },
   },
   watch: {

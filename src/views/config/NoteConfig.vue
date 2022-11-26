@@ -27,12 +27,12 @@
         <th>삭제</th>
         <th>이력</th>
       </tr>
-      <tr v-for="note in notes" :key="note.seq" @click="readNote(note)">
+      <tr v-for="note in notes" :key="note.seq">
         <td>{{ note.seq }}</td>
         <td v-if="mode === 'S'">{{ note.receiverId }}</td>
         <td v-else>{{ note.senderId }}</td>
         <td class="content">
-          <div class="inner">{{ note.content }}</div>
+          <div class="inner" @click="readNote(note)">{{ note.content }}</div>
         </td>
         <td>{{ timeStampToDate(note.sendTime) }}</td>
         <td>{{ timeStampToDate(note.readTime) }}</td>
@@ -50,51 +50,55 @@
           </button>
         </td>
       </tr>
-      <PopupSlot v-if="noteVisible" @closePopup="popupClose()">
-        <div>{{ activeNote.content }}</div>
-        <div v-if="activeNote.count > 0" class="rep-cont">
-          {{ activeNote.count }}개 답변 <span v-if="mode === 'R'">보냈음</span
-          ><span v-else>받았음</span>
-        </div>
-        <template v-else>
-          <div v-if="mode === 'R'">보낸 답변이 없습니다.</div>
-          <div v-else>받은 답변이 없습니다.</div>
-        </template>
-        <div class="ctrl">
-          <button v-if="mode === 'R'" class="form bora" @click="ReplyInsert()">
-            답변하기
-          </button>
-          <button class="form bora" @click="popupClose()">닫기</button>
-          <button class="form red" @click="showAlert(activeNote)">삭제</button>
-        </div>
-      </PopupSlot>
-      <PopupSlot v-if="replyPopupVisible" @closePopup="replyPopupClose()">
-        <ReplyForm
-          :receiver="{
-            seq: activeNote.sender,
-            userId: activeNote.senderId,
-          }"
-          :sender="{
-            seq: activeNote.receiver,
-            userId: activeNote.receiverId,
-          }"
-          :prev_note="activeNote"
-          @close="replyPopupClose()"
-        />
-      </PopupSlot>
-      <PopupSlot v-if="historyVisible" @closePopup="showHistoryClose()">
-        <NoteHistory
-          :note="historyVisible"
-          :mode="mode"
-          @close="showHistoryClose()"
-        />
-      </PopupSlot>
-      <AppAlert
-        v-if="alertVisible"
-        message="쪽지를 삭제하시겠습니까?"
-        @confirm="(yn) => deleteNote(yn)"
-      ></AppAlert>
     </table>
+    <div class="more">
+      <button @click="lodeMore">더 보기</button>
+    </div>
+    <PopupSlot v-if="noteVisible" @closePopup="popupClose()">
+      <div>{{ activeNote.content }}</div>
+      <div v-if="activeNote.count > 0" class="rep-cont">
+        {{ activeNote.count }}개 답변 <span v-if="mode === 'R'">보냈음</span
+        ><span v-else>받았음</span>
+      </div>
+      <template v-else>
+        <div v-if="mode === 'R'">보낸 답변이 없습니다.</div>
+        <div v-else>받은 답변이 없습니다.</div>
+      </template>
+      <div class="ctrl">
+        <button v-if="mode === 'R'" class="form bora" @click="ReplyInsert()">
+          답변하기
+        </button>
+        <button class="form bora" @click="popupClose()">닫기</button>
+        <button class="form red" @click="showAlert(activeNote)">삭제</button>
+      </div>
+    </PopupSlot>
+    <PopupSlot v-if="replyPopupVisible" @closePopup="replyPopupClose()">
+      <ReplyForm
+        :receiver="{
+          seq: activeNote.sender,
+          userId: activeNote.senderId,
+        }"
+        :sender="{
+          seq: activeNote.receiver,
+          userId: activeNote.receiverId,
+        }"
+        :prev_note="activeNote"
+        @close="replyPopupClose()"
+      />
+    </PopupSlot>
+    <PopupSlot v-if="historyVisible" @closePopup="showHistoryClose()">
+      <NoteHistory
+        :note="historyVisible"
+        :mode="mode"
+        @close="showHistoryClose()"
+        @reply="addReply"
+      />
+    </PopupSlot>
+    <AppAlert
+      v-if="alertVisible"
+      message="쪽지를 삭제하시겠습니까?"
+      @confirm="(yn) => deleteNote(yn)"
+    ></AppAlert>
   </div>
 </template>
 
@@ -126,6 +130,22 @@ export default {
     this.loadSendNote(this.notes);
   },
   methods: {
+    lodeMore() {
+      const lastNote = this.notes[this.notes.length - 1];
+      api.note.loadMore(this.mode, lastNote.seq).then((res) => {
+        // res.data.forEach((note) => {
+        //   this.notes.push(note);
+        // });
+        this.notes.push(...res.data);
+        console.log(res);
+      });
+    },
+    addReply(note) {
+      console.log(note);
+      if (this.mode == "S") {
+        this.notes.push(note);
+      }
+    },
     loadSendNote() {
       api.note.loadSendNote().then((res) => {
         console.log("[NOTE]", res);
@@ -141,8 +161,18 @@ export default {
       });
     },
     timeStampToDate(millis) {
+      const date = new Date(); // 현재 시간
+      const now = util.formatDate(date); // '2022-11-26 11:31:32'
       if (millis) {
-        return util.formatDate(new Date(millis));
+        const time = util.formatDate(new Date(millis));
+        // 2022-11-21 21:44:12
+        const date1 = now.substring(0, 10);
+        const time1 = time.substring(0, 10);
+        if (date1 === time1) {
+          return time.substring(11, 16) + "🤭";
+        } else {
+          return time1;
+        }
       } else {
         return "읽지않음";
       }
@@ -275,6 +305,7 @@ export default {
     border: none;
     background: none;
     color: rgb(38, 158, 150);
+    white-space: nowrap;
   }
 }
 </style>

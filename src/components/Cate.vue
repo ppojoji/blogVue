@@ -53,11 +53,24 @@ export default {
   },
   mounted() {
     console.log(api);
+
     api.cate.all().then((res) => {
-      this.cates = res.data.cates;
+      const cates = res.data.cates; //
+      if (this.user && this.user.admin === "Y") {
+        this.cates = cates;
+      } else {
+        this.cates = cates.filter((cate) => {
+          return cate.type != "NC";
+        });
+      }
       const cate = this.cates.find((cate) => cate.name === this.initValue);
       this.$emit("cateSelect", cate);
     });
+  },
+  computed: {
+    user() {
+      return this.$store.state.user.loginUser;
+    },
   },
   methods: {
     cateSelected(e) {

@@ -288,9 +288,9 @@ const note = {
     //console.log(senderSeq, receiverSeq, content);
     return axios.post(`/note`, { sender, receiver, content });
   },
-  sendReply: (sender, receiver, content, prev_note) => {
+  sendReply: (content, prev_note) => {
     //console.log(senderSeq, receiverSeq, content);
-    return axios.post(`/note/reply`, { sender, receiver, content, prev_note });
+    return axios.post(`/note/reply`, { content, prev_note });
   },
   noteHistory: (noteSeq, mode) => axios.get(`/note/history/${noteSeq}/${mode}`),
   /*
@@ -305,6 +305,8 @@ const note = {
   readSentNote: (noteSeq) => axios.get(`/note/${noteSeq}`),
   deleteNote: (noteSeq, mode) => axios.delete(`/note/${noteSeq}/${mode}`),
   queryMessage: (maxSeq) => axios.get(`/notes/new/${maxSeq}`),
+  loadMore: (type, lastNoteSeq) =>
+    axios.get(`/notes/${type}`, { params: { last: lastNoteSeq } }),
 };
 export { admin, cate, user, post };
 export default {
