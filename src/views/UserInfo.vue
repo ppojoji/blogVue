@@ -11,13 +11,16 @@
       <div class="menu-item">
         <router-link to="/me/note">쪽지함</router-link>
       </div>
+      <div class="menu-item">
+        <router-link to="/me/myInfo">내정보 관리</router-link>
+      </div>
     </div>
     <div class="main-area" v-if="user">
       <!-- <h3>여기에 메뉴의 내용</h3> -->
       <PostConfig v-if="menuType === 'post'" key="post" />
       <BookMarkConfig v-else-if="menuType === 'bookmark'" key="bookmark" />
       <NoteConfig v-else-if="menuType === 'note'" key="note" />
-
+      <MyInfo v-else-if="menuType === 'myInfo'" key="myInfo" />
       <div v-else>없는 메뉴</div>
     </div>
   </div>
@@ -28,9 +31,10 @@ import PostConfig from "./config/PostConfig.vue";
 import BookMarkConfig from "./config/BookMarkConfig.vue";
 import NoteConfig from "./config/NoteConfig.vue";
 import LoginForm from "../components/LoginForm.vue";
+import MyInfo from "./config/MyInfo.vue";
 
 export default {
-  components: { PostConfig, BookMarkConfig, LoginForm, NoteConfig },
+  components: { PostConfig, BookMarkConfig, LoginForm, NoteConfig, MyInfo },
   data() {
     return {
       menuType: "post",

@@ -124,6 +124,7 @@ export default {
       timer: null,
       cateSeq: 0,
       cateName: null,
+      lastPostSeq: 0,
     };
   },
   mounted() {

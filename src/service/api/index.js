@@ -68,6 +68,15 @@ const user = {
     form.append("hintAns", hint.pwAns);
     return axios.post(`/api/user/hint`, form);
   },
+  updateProfile: (file) => {
+    const form = new FormData();
+    form.append("profile", file);
+    return axios.post("/user/profile", form, {
+      headers: {
+        "Content-Type": "multipart/formdata",
+      },
+    });
+  },
 };
 const bookMark = {
   bookMark: (postSeq) => {
@@ -92,6 +101,18 @@ const bookMark = {
 const post = {
   all: () => {
     return axios.get("/api/posts");
+  },
+  prevPosts: (basePostSeq, cateName) => {
+    const url = cateName ? `/api/posts/cate/${cateName}` : "/api/posts/cate";
+    return axios.get(url, {
+      params: { basePostSeq, dir: "prev" },
+    });
+  },
+  nextPosts: (basePostSeq, cateName) => {
+    const url = cateName ? `/api/posts/cate/${cateName}` : "/api/posts/cate";
+    return axios.get(url, {
+      params: { basePostSeq, dir: "next" },
+    });
   },
   allForAdmin: () => {
     return axios.get("/api/admin/posts");
@@ -305,8 +326,10 @@ const note = {
   readSentNote: (noteSeq) => axios.get(`/note/${noteSeq}`),
   deleteNote: (noteSeq, mode) => axios.delete(`/note/${noteSeq}/${mode}`),
   queryMessage: (maxSeq) => axios.get(`/notes/new/${maxSeq}`),
-  loadMore: (type, lastNoteSeq) =>
-    axios.get(`/notes/${type}`, { params: { last: lastNoteSeq } }),
+  // loadMore: (type, lastNoteSeq) =>
+  //   axios.get(`/notes/${type}`, { params: { last: lastNoteSeq } }),
+  loadMore: (type, lastNoteSeq, size) =>
+    axios.get(`/notes/${type}`, { params: { last: lastNoteSeq, size: size } }),
 };
 export { admin, cate, user, post };
 export default {

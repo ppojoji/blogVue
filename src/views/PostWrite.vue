@@ -14,7 +14,7 @@
 <script>
 import EditForm from "../components/EditForm.vue";
 import api from "../service/api";
-
+import toast from "../components/ui/toast";
 export default {
   components: { EditForm },
   data() {
@@ -50,6 +50,12 @@ export default {
             console.log(res);
             alert("글이 작성되었습니다.");
             this.$router.replace("/");
+          }
+        })
+        .catch((err) => {
+          console.log(err.response.data.cause);
+          if (err.response.data.cause === "LOGIN_REQUIRED") {
+            toast.error("로그인을 해주세요.", 10000);
           }
         });
     },

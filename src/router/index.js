@@ -86,6 +86,11 @@ const routes = [
     name: "MemberJoin",
     component: MemberJoin,
   },
+  // {
+  //   path: "/me/myInfo",
+  //   name: "MyInfo",
+  //   component: MyInfo,
+  // },
 ];
 
 const router = new VueRouter({

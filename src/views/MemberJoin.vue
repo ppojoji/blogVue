@@ -103,6 +103,16 @@
       </div>
 
       <div class="join_row">
+        <h3 class="join_title">프로필 사진</h3>
+        <input
+          type="file"
+          name="files"
+          id="file"
+          @change="attacheFile"
+          accept=".txt, .gif, .jpg, .png"
+        />
+      </div>
+      <div class="join_row">
         <div class="btn_area">
           <!-- <button
             class="btn btn-primary"
@@ -129,6 +139,7 @@ import api from "../service/api";
 export default {
   data() {
     return {
+      upfiles: [],
       signup: {
         // id: {value: null, error: false, success: false},
         id: null,
@@ -195,6 +206,27 @@ export default {
     },
   },
   methods: {
+    attacheFile(e) {
+      console.log(e.target.files);
+      const file = e.target.files[0];
+
+      const reader = new FileReader(); // (1)
+      reader.addEventListener("load", () => {
+        // (3)
+        const src = reader.result;
+        file.src = src;
+        this.upfiles.push(file);
+
+        // (4) 편집 상태에서는 첨부된 파일을 서버로 보내서 업로드해버림!
+        if (this.editMode) {
+          api.post.uploadFile(this.post.seq, file).then(() => {});
+        }
+      });
+      reader.readAsDataURL(file); // (2)
+
+      e.target.value = ""; // input file 초기화 하는 꼼수
+      // this.totalSize += e.target.files[0].size;
+    },
     validateId() {
       this.idError.cnt = 0;
       this.idError.size = false;

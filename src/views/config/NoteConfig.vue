@@ -28,32 +28,57 @@
         <th>이력</th>
       </tr>
       <tr v-for="note in notes" :key="note.seq">
-        <td>{{ note.seq }}</td>
-        <td v-if="mode === 'S'">{{ note.receiverId }}</td>
-        <td v-else>{{ note.senderId }}</td>
-        <td class="content">
-          <div class="inner" @click="readNote(note)">{{ note.content }}</div>
-        </td>
-        <td>{{ timeStampToDate(note.sendTime) }}</td>
-        <td>{{ timeStampToDate(note.readTime) }}</td>
-        <td>
-          <span
-            class="del material-icons-outlined"
-            @click.stop="showAlert(note)"
-          >
-            delete_forever
-          </span>
-        </td>
-        <td>
-          <button class="btn-history" @click.stop="showHistory(note)">
-            조회
-          </button>
-        </td>
+        <template v-if="note.isLine">
+          <td class="line" colspan="7"></td>
+        </template>
+        <template v-else>
+          <td>{{ note.seq }}</td>
+          <td v-if="mode === 'S'">{{ note.receiverId }}</td>
+          <td v-else>{{ note.senderId }}</td>
+          <td class="content">
+            <div class="inner" @click="readNote(note)">{{ note.content }}</div>
+          </td>
+          <td>{{ timeStampToDate(note.sendTime) }}</td>
+          <td>{{ timeStampToDate(note.readTime) }}</td>
+          <td>
+            <span
+              class="del material-icons-outlined"
+              @click.stop="showAlert(note)"
+            >
+              delete_forever
+            </span>
+          </td>
+          <td>
+            <button class="btn-history" @click.stop="showHistory(note)">
+              조회
+            </button>
+          </td>
+        </template>
       </tr>
     </table>
     <div class="more">
-      <button @click="lodeMore">더 보기</button>
+      <div class="form-inline">
+        <div class="form-group mb-2">
+          <div v-if="notes" class="all-search">
+            총 <span class="num">{{ notes.length }}</span
+            >건
+          </div>
+        </div>
+        <div class="form-group mx-sm-3 mb-2">
+          <select class="form-control" name="listPageSize" v-model="size">
+            <option value="10">10</option>
+            <option value="20">20</option>
+            <option value="50">50</option>
+            <option value="100">100</option>
+          </select>
+        </div>
+        <p v-if="endOfNote">마지막 글 입니다.</p>
+        <button class="btn btn-primary mb-2" v-else @click="lodeMore">
+          더 보기
+        </button>
+      </div>
     </div>
+
     <PopupSlot v-if="noteVisible" @closePopup="popupClose()">
       <div>{{ activeNote.content }}</div>
       <div v-if="activeNote.count > 0" class="rep-cont">
@@ -118,12 +143,14 @@ export default {
   data() {
     return {
       notes: null,
+      endOfNote: false,
       noteVisible: false,
       activeNote: null,
       mode: null,
       alertVisible: false,
       replyPopupVisible: false,
       historyVisible: false,
+      size: "10",
     };
   },
   mounted() {
@@ -132,12 +159,20 @@ export default {
   methods: {
     lodeMore() {
       const lastNote = this.notes[this.notes.length - 1];
-      api.note.loadMore(this.mode, lastNote.seq).then((res) => {
+      api.note.loadMore(this.mode, lastNote.seq, this.size).then((res) => {
         // res.data.forEach((note) => {
         //   this.notes.push(note);
         // });
+        this.notes.push({ seq: Math.random() * 10000, isLine: true });
         this.notes.push(...res.data);
-        console.log(res);
+
+        this.$nextTick().then(() => {
+          document.scrollingElement.scrollTop = 100000000;
+        });
+        if (res.data.length === 0) {
+          this.endOfNote = true;
+          toast.info("마지막 글입니다.", 3000);
+        }
       });
     },
     addReply(note) {
@@ -150,6 +185,7 @@ export default {
       api.note.loadSendNote().then((res) => {
         console.log("[NOTE]", res);
         this.mode = "S";
+        this.endOfNote = false;
         this.notes = res.data;
       });
     },
@@ -157,6 +193,7 @@ export default {
       api.note.loadReceiverNote().then((res) => {
         console.log("[NOTE]", res);
         this.mode = "R";
+        this.endOfNote = false;
         this.notes = res.data;
       });
     },
@@ -179,7 +216,7 @@ export default {
     },
     readNote2(note) {
       const methodName = this.mode === "R" ? "readNote" : "readSentNote";
-      api.note[methodName](note.sq).then((res) => {
+      api.note[methodName](note.seq).then((res) => {
         this.activeNote = res.data;
         // this.notes.splice(idx, 1, res.data);
         note.readTime = res.data.readTime;
@@ -291,6 +328,10 @@ export default {
           overflow: hidden;
           text-overflow: ellipsis;
         }
+      }
+      td.line {
+        background-color: #f2f2f2;
+        padding: 4px;
       }
     }
   }

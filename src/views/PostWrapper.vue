@@ -1,7 +1,11 @@
 <template>
   <div>
     <div class="post-control">
-      <Cate class="fill-width" @cateSelect="selectCate" :initValue="cateName" />
+      <Cate
+        class="fill-width"
+        @cateSelect="changeCategory"
+        :initValue="cateName"
+      />
       <button
         class="btn"
         :class="{ enabled: timer, disabled: !timer }"
@@ -18,6 +22,10 @@
     </div>
     <PhotoPost v-if="boardType === 'PH'" :postList="lists"> </PhotoPost>
     <ListPost :timerOn="timer" v-else :lists="lists"> </ListPost>
+    <div>
+      <button @click="prev">이전</button>
+      <button @click="next">다음</button>
+    </div>
     <!--v-if="user.admin === 'Y'" -->
     <div class="controls" v-if="boardType === 'NC'">
       <button
@@ -39,6 +47,7 @@ import api from "../service/api";
 import ListPost from "./Post.vue";
 import PhotoPost from "./PhotoPost.vue";
 import Cate from "../components/Cate.vue";
+import toast from "../components/ui/toast";
 
 export default {
   components: {
@@ -77,7 +86,51 @@ export default {
       return this.$store.state.user.loginUser;
     },
   },
+  watch: {
+    $route(cur) {
+      console.log("[카테고리 변경]", cur.params.catename);
+      this.selectByCateName(cur.params.catename);
+    },
+  },
   methods: {
+    next() {
+      // 시간적으로 이전 글들
+      const lastPost = this.lists[this.lists.length - 1];
+      const cateName = this.$route.params.catename;
+      api.post.nextPosts(lastPost.seq, cateName).then((res) => {
+        console.log(res);
+        if (res.data.posts.length > 0) {
+          this.lists = res.data.posts;
+        } else {
+          toast.info("마지막 페이지 입니다.", 3000);
+        }
+      }); //
+    },
+    prev() {
+      // 시간적으로 이후 글들
+      const leadPost = this.lists[0];
+      const cateName = this.$route.params.catename;
+      api.post.prevPosts(leadPost.seq, cateName).then((res) => {
+        console.log(res);
+        // 원래는 백엔드에서 순서를 바로잡아주는게 맞을 듯....
+        if (res.data.posts.length > 0) {
+          this.lists = res.data.posts;
+        } else {
+          toast.info("첫 페이지 입니다.", 3000);
+        }
+      });
+    },
+    changeCategory(cate) {
+      const cateName = cate ? cate.name : null;
+      if (this.$route.params.catename === cateName) {
+        return;
+      }
+      if (cateName) {
+        this.$router.push(`/posts/${cateName}`); // this.selectByCateName(cate.name);
+      } else {
+        this.$router.push(`/posts`);
+      }
+    },
     selectCate(cate) {
       if (cate) {
         this.selectByCateName(cate.name);

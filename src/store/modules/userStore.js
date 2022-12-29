@@ -16,6 +16,9 @@ const mutations = {
     state.loginUser = user;
     console.log("완료", user);
   },
+  updatePorfile(state, userpic) {
+    state.loginUser.userpic = userpic;
+  },
 };
 
 export default {
