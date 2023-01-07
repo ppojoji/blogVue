@@ -12,6 +12,7 @@
           edit
         </span>
       </div>
+
       <div class="ps_box" v-if="showVisible">
         <div class="custom-file">
           <input
@@ -34,6 +35,24 @@
     <div class="update-row">
       <h4>{{ user.id }}</h4>
     </div>
+    <div class="update-row">
+      <h3>회원탈퇴</h3>
+      <p>이메일 입력 후 탈퇴 버튼을 누르면 계정을 삭제합니다.</p>
+      <div class="ps_box">
+        <input
+          type="text"
+          class="form-control"
+          placeholder="이메일 입력"
+          v-model="email"
+        />
+        <input
+          type="button"
+          class="form-control btn btn-danger btn-profile"
+          value="회원탈퇴"
+          @click="deleteUser"
+        />
+      </div>
+    </div>
   </div>
 </template>
 
@@ -53,6 +72,7 @@ export default {
     return {
       showVisible: false,
       profile: null,
+      email: null,
     };
   },
   methods: {
@@ -66,6 +86,15 @@ export default {
       api.user.updateProfile(this.profile).then((res) => {
         console.log(res);
         this.$store.commit("updatePorfile", res.data.userpic);
+      });
+    },
+    deleteUser() {
+      api.user.deleteUser(this.email).then((res) => {
+        console.log(res);
+        this.$store.state.user.loginUser = null;
+        this.$router.push({
+          path: "/",
+        });
       });
     },
   },

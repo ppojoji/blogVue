@@ -77,6 +77,11 @@ const user = {
       },
     });
   },
+  deleteUser: (email) => {
+    const form = new FormData();
+    form.append("email", email);
+    return axios.post(`article/api/userDelete`, form);
+  },
 };
 const bookMark = {
   bookMark: (postSeq) => {

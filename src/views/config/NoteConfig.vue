@@ -33,8 +33,13 @@
         </template>
         <template v-else>
           <td>{{ note.seq }}</td>
-          <td v-if="mode === 'S'">{{ note.receiverId }}</td>
-          <td v-else>{{ note.senderId }}</td>
+          <td v-if="mode === 'S'" :class="{ deleteUser: !note.receiverId }">
+            {{ note.receiverId || "탈퇴회원" }}
+          </td>
+          <td v-else :class="{ deleteUser: !note.senderId }">
+            {{ note.senderId || "탈퇴회원" }}
+          </td>
+          <!-- <td v-else>{{ note.senderId ? note.senderId : "탈퇴회원" }}</td> -->
           <td class="content">
             <div class="inner" @click="readNote(note)">{{ note.content }}</div>
           </td>
@@ -332,6 +337,10 @@ export default {
       td.line {
         background-color: #f2f2f2;
         padding: 4px;
+      }
+      td.deleteUser {
+        color: #999;
+        font-size: 14px;
       }
     }
   }
