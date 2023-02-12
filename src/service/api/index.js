@@ -307,6 +307,11 @@ const admin = {
       return axios.post(`admin/api/ban/user/${banUserSeq}/days/${duration}`);
     },
   },
+  stat: {
+    user: {
+      count: (range) => axios.get(`/admin/api/stat/user/${range}`),
+    },
+  },
 };
 
 const note = {
