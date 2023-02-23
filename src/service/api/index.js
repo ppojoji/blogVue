@@ -311,6 +311,9 @@ const admin = {
     user: {
       count: (range) => axios.get(`/admin/api/stat/user/${range}`),
     },
+    community: {
+      count: (range) => axios.get(`/admin/api/stat/community/${range}`),
+    },
   },
 };
 
