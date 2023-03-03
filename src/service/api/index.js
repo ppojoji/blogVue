@@ -309,10 +309,16 @@ const admin = {
   },
   stat: {
     user: {
-      count: (range) => axios.get(`/admin/api/stat/user/${range}`),
+      count: (type, range) =>
+        axios.get(`/admin/api/stat/user/${type}`, {
+          params: { y: range.year, m: range.month },
+        }),
     },
     community: {
-      count: (range) => axios.get(`/admin/api/stat/community/${range}`),
+      count: (type, range) =>
+        axios.get(`/admin/api/stat/community/${type}`, {
+          params: { y: range.year, m: range.month },
+        }),
     },
   },
 };

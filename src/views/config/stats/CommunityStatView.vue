@@ -2,6 +2,13 @@
   <div class="stat">
     <h3>커뮤니티 통계</h3>
     <div class="stat-type">
+      <select class="custom-select" v-model="statType">
+        <option value="">[전체보기]</option>
+        <option value="day">일별</option>
+        <option value="week">주별</option>
+        <option value="month">월별</option>
+        <option value="year">년도별</option>
+      </select>
       <label
         ><input
           type="radio"
@@ -43,6 +50,11 @@
         />시간별</label
       >
     </div>
+    <RangeSelect
+      v-if="this.statType !== 'year'"
+      :monthVisible="this.statType === 'day' || this.statType === 'week'"
+      @range-update="changeDate"
+    />
     <div class="stat-view">
       <table class="table">
         <tr>
@@ -71,6 +83,7 @@
 
 <script>
 import api from "../../../service/api";
+import RangeSelect from "./RangeSelect.vue";
 
 const hourMap = [];
 for (let h = 0; h < 24; h++) {
@@ -78,6 +91,7 @@ for (let h = 0; h < 24; h++) {
 }
 
 export default {
+  components: { RangeSelect },
   data() {
     return {
       statType: "day",
@@ -87,14 +101,24 @@ export default {
           ","
         ),
       hourMap,
+      /* TODO 여기서 현재 연도와 월을 가져오는 함수(기능)이 필요함 */
+      // array 구조 분해 할당 문법으로 받아오면 좋음
+      // ref: https://developer.mozilla.org/ko/docs/Web/JavaScript/Reference/Operators/Destructuring_assignment
+      // ref: https://velog.io/@gil0127/%EA%B5%AC%EC%A1%B0-%EB%B6%84%ED%95%B4-%ED%95%A0%EB%8B%B9-%EA%B0%9D%EC%B2%B4-%EB%B0%B0%EC%97%B4
+      range: {
+        year: "2023",
+        month: "2",
+      },
     };
   },
   mounted() {
+    // const year = "2023";
+    // const month = "2";
     this.loadCommunityStat();
   },
   methods: {
     loadCommunityStat() {
-      api.admin.stat.community.count(this.statType).then((res) => {
+      api.admin.stat.community.count(this.statType, this.range).then((res) => {
         /*
         if (this.statType == "hour") {
           res.data.forEach((stat) => {
@@ -117,9 +141,22 @@ export default {
         return 0;
       }
     },
+    statSelected(e) {
+      const statValue = e.target.value;
+      console.log(statValue);
+      this.statType = statValue;
+    },
+    changeDate(range) {
+      console.log(range); // {type: "", year: "2022", month: "12"}
+      this.range = range;
+      // this.loadCommunityStat(range);
+    },
   },
   watch: {
     statType() {
+      this.loadCommunityStat();
+    },
+    range() {
       this.loadCommunityStat();
     },
   },
