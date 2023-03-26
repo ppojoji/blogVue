@@ -27,6 +27,19 @@
         />월별</label
       >
     </div>
+    <RangeSelect
+      v-if="this.statType !== 'year'"
+      :monthVisible="this.statType === 'day' || this.statType === 'week'"
+      @range-update="updateRange"
+      :range="range"
+    />
+    <LineChart
+      :year="range.year"
+      :month="range.month"
+      :statData="statData"
+      :statType="statType"
+      :labels="['가입', '탈퇴']"
+    />
     <div class="stat-view">
       <table class="table">
         <tr>
@@ -46,12 +59,19 @@
 
 <script>
 import api from "../../../service/api";
+import RangeSelect from "./RangeSelect.vue";
+import LineChart from "./LineChart.vue";
 
 export default {
+  components: { RangeSelect, LineChart },
   data() {
     return {
       statType: "day",
       statData: [],
+      range: {
+        year: "2023",
+        month: "2",
+      },
     };
   },
   mounted() {
@@ -59,13 +79,28 @@ export default {
   },
   methods: {
     loadUserStat() {
-      api.admin.stat.user.count(this.statType).then((res) => {
+      api.admin.stat.user.count(this.statType, this.range).then((res) => {
+        res.data.forEach((e) => {
+          e.decCnt = e.delCnt;
+          if (e.joinCnt !== undefined) {
+            e.incCnt = e.joinCnt;
+          } else if (e.postCnt !== undefined) {
+            e.incCnt = e.postCnt;
+          }
+        });
         this.statData = res.data;
       });
     },
+    updateRange(range) {
+      this.range = range;
+    },
   },
+
   watch: {
     statType() {
+      this.loadUserStat();
+    },
+    range() {
       this.loadUserStat();
     },
   },

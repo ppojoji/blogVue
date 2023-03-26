@@ -1,24 +1,21 @@
 # blog
 
-## Project setup
-```
-npm install
+## 5.1. 사용자 현황
+
 ```
 
-### Compiles and hot-reloads for development
-```
-npm run serve
-```
++------+
+| 회원  | 커뮤니터
 
-### Compiles and minifies for production
-```
-npm run build
-```
+()day  ()week  ()month
 
-### Lints and fixes files
-```
-npm run lint
-```
+* 129 명 가입, 31명 탈퇴
 
-### Customize configuration
-See [Configuration Reference](https://cli.vuejs.org/config/).
+ddddd 08:34
+ddddd 08:45
+ddddd 09:11
+
+
+
+
+```
